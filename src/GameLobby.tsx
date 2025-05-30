@@ -173,7 +173,9 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
             value={rounds}
             onChange={(e) => {
               setRounds(parseInt(e.target.value));
-              updateServerRounds(parseInt(e.target.value));
+              updateServerRounds(parseInt(e.target.value))?.catch((error) =>
+                toast.error((error as Error).message)
+              );
             }}
             min="1"
             max="1000"
@@ -195,7 +197,9 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
             value={secondsPerQuestion}
             onChange={(e) => {
               setSecondsPerQuestion(parseInt(e.target.value));
-              updateServerSecondsPerQuestion(parseInt(e.target.value));
+              updateServerSecondsPerQuestion(parseInt(e.target.value))?.catch(
+                (error) => toast.error((error as Error).message)
+              );
             }}
             min="5"
             max="60"
