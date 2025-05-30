@@ -130,6 +130,7 @@ function JoinGameForm({
         <input
           id="quickId"
           type="text"
+          autoFocus
           value={quickIdField}
           onChange={(e) => setQuickIdField(e.target.value)}
           disabled={isJoining}

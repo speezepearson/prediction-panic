@@ -153,17 +153,17 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
       </div>
       <div className="mb-6">
         <h3 className="text-xl font-semibold text-gray-700 mb-2">Players</h3>
-        <ul className="space-y-1 p-3 rounded-md">
+        <ul className="p-3 rounded-md">
           {getRecordEntries(game.players)
             .sort(([idA, { name: a }], [idB, { name: b }]) =>
               idA === playerId ? -1 : idB === playerId ? 1 : a.localeCompare(b)
             )
             .map(([id, { name }]) => (
-              <li key={id} className="text-gray-800">
+              <li key={id} className="text-gray-800 border">
                 {id === playerId ? (
                   <EditableName game={game} playerId={playerId} />
                 ) : (
-                  name
+                  <div className="px-2 py-1">{name || "(anonymous)"}</div>
                 )}
               </li>
             ))}
@@ -260,12 +260,12 @@ function EditableName({
     [game._id, playerId, updateNameMutation]
   );
   return (
-    <div className="inline-flex flex-row w-[20em] items-center gap-2">
+    <div className="inline-flex flex-row items-center gap-2 w-full">
       <input
         type="text"
         autoFocus
         placeholder="Your name"
-        className="w-[15em] px-3 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
+        className="w-full px-2 py-1 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
         value={name}
         onChange={(e) => {
           setName(e.target.value);
