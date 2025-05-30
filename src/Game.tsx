@@ -99,11 +99,12 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
   );
 
   useEffect(() => {
-    if (game) {
-      setRoundsF(game.roundsRemaining.toString());
-      setSecondsPerQuestionF(game.secondsPerQuestion.toString());
-    }
-  }, [game]);
+    setRoundsF(game.roundsRemaining.toString());
+  }, [game.roundsRemaining]);
+
+  useEffect(() => {
+    setSecondsPerQuestionF(game.secondsPerQuestion.toString());
+  }, [game.secondsPerQuestion]);
 
   if (!game) {
     // Still loading game details
