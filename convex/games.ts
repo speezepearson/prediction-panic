@@ -260,3 +260,14 @@ export const setPlayerGuess = mutation({
     });
   },
 });
+
+export const resetGame = mutation({
+  args: { gameId: v.id("games") },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.gameId, {
+      started: false,
+      roundsRemaining: 100,
+      finishedRounds: [],
+    });
+  },
+});

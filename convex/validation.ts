@@ -18,3 +18,7 @@ export type PlayerId = z.infer<typeof playerIdSchema>;
 
 export type StartedGame = Doc<"games"> & { started: true };
 export type LobbyGame = Doc<"games"> & { started: false };
+
+export function scoreGuess(guess: number, answer: boolean) {
+  return 100 * (1 + Math.log2(answer ? guess : 1 - guess));
+}

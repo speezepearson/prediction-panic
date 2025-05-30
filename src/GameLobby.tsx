@@ -8,11 +8,16 @@ import {
   gameSecondsPerQuestionSchema,
   LobbyGame,
   PlayerId,
+  scoreGuess,
   StartedGame,
 } from "../convex/validation";
 import z from "zod/v4";
 import { Doc, Id } from "../convex/_generated/dataModel";
-import { getRecordEntries } from "./lib/utils";
+import {
+  formatPlusMinus,
+  formatProbabilityAsPercentage,
+  getRecordEntries,
+} from "./lib/utils";
 import { CalibrationData, CalibrationPlot } from "./CalibrationPlot";
 
 interface GameLobbyProps {
@@ -286,7 +291,9 @@ export function RunningGame({
   playerId: PlayerId;
   onLeave: () => void;
 }) {
-  useEffect(() => console.log({ game }), [game]);
+  const currentRound = useQuery(api.games.getCurrentRound, {
+    gameId: game._id,
+  });
   return (
     <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-6 pb-4 border-b">
@@ -299,48 +306,93 @@ export function RunningGame({
         </button>
       </div>
 
-      {game.started && <CurrentRound game={game} playerId={playerId} />}
+      <div className="w-full min-h-80 border border-blue-300 bg-blue-50 rounded-md relative">
+        {currentRound ? (
+          <ActiveRound
+            game={game}
+            currentRound={currentRound}
+            playerId={playerId}
+          />
+        ) : currentRound === undefined ? (
+          <div className="flex justify-center items-center h-full">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        ) : game.roundsRemaining === 0 ? (
+          <GameOver game={game} playerId={playerId} />
+        ) : (
+          <>{/* Prepare! */}</>
+        )}
+      </div>
     </div>
   );
 }
 
-function CurrentRound({
+function GameOver({
   game,
   playerId,
 }: {
   game: StartedGame;
   playerId: PlayerId;
 }) {
-  const currentRound = useQuery(api.games.getCurrentRound, {
-    gameId: game._id,
-  });
+  const [isWorking, setIsWorking] = useState(false);
+  const resetGameMutation = useMutation(api.games.resetGame);
+
+  const scores: Record<PlayerId, number> = useMemo(() => {
+    const result: Record<PlayerId, number> = {};
+    for (const round of game.finishedRounds) {
+      for (const [playerId, guess] of getRecordEntries(round.guesses)) {
+        if (result[playerId] === undefined) result[playerId] = 0;
+        result[playerId] += scoreGuess(guess, round.question.answer);
+      }
+    }
+    return result;
+  }, [game]);
 
   return (
-    <div className="w-full border border-blue-300 bg-blue-50 rounded-md">
-      {currentRound === undefined ? (
-        <div className="flex justify-center items-center h-full">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
-      ) : currentRound === null && game.roundsRemaining === 0 ? (
-        <div className="flex flex-col justify-center items-center h-full w-full">
-          <p className="text-lg text-gray-800">Game over!</p>
-          <ScorePlot game={game} playerId={playerId} />
-        </div>
-      ) : (
-        <div className="h-80">
-          {currentRound === null ? (
-            <div className="flex justify-center items-center h-full">
-              {/* Prepare! */}
-            </div>
-          ) : (
-            <ActiveRound
-              game={game}
-              currentRound={currentRound}
-              playerId={playerId}
-            />
-          )}
-        </div>
-      )}
+    <div className="flex flex-col justify-center items-center h-full w-full">
+      <h2 className="text-2xl font-bold text-gray-800">Game Over!</h2>
+      <div className="flex flex-row items-center justify-center gap-2">
+        <table className="table-auto border-collapse border border-gray-300">
+          <thead>
+            <tr>
+              <th className="px-2 py-1 border border-gray-300">Player</th>
+              <th className="px-2 py-1 border border-gray-300">Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {getRecordEntries(scores)
+              .sort(([idA, scoreA], [idB, scoreB]) => scoreB - scoreA)
+              .map(([id, score]) => (
+                <tr key={id}>
+                  <td className="text-center px-2 py-1 border border-gray-300">
+                    {id === playerId
+                      ? "You"
+                      : (game.players[id]?.name ?? "???")}
+                  </td>
+                  <td className="text-center px-2 py-1 border border-gray-300">
+                    {score.toFixed(0)}
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="text-lg text-gray-800">
+        Game ended! Your calibration curve:
+      </p>
+      <ScorePlot game={game} playerId={playerId} />
+      <button
+        disabled={isWorking}
+        onClick={() => {
+          setIsWorking(true);
+          resetGameMutation({ gameId: game._id })
+            .catch((error) => toast.error((error as Error).message))
+            .finally(() => setIsWorking(false));
+        }}
+        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        {isWorking ? "Resetting..." : "Reset Game"}
+      </button>
     </div>
   );
 }
@@ -378,7 +430,7 @@ function ActiveRound({
 
   const nudgeGuess = useCallback(
     (dir: "up" | "down", strength: "weak" | "strong") => {
-      const oddsFactor = strength === "weak" ? 1.2 : 2;
+      const oddsFactor = strength === "weak" ? Math.pow(2, 1 / 5) : 2;
       const odds = playerGuess / (1 - playerGuess);
       const newOdds = odds * (dir === "up" ? oddsFactor : 1 / oddsFactor);
       setPlayerGuess(newOdds / (1 + newOdds));
@@ -401,15 +453,13 @@ function ActiveRound({
   }, [nudgeGuess]);
 
   return (
-    <div className="flex flex-col items-center p-2 h-full">
+    <div className="flex flex-col items-center p-2">
       <h3 className="text-xl font-semibold text-blue-700 mb-2">
         Current Statement:
       </h3>
       <p className="text-lg text-gray-800">{currentRound.question.text}</p>
 
-      <div className="flex-grow"></div>
-
-      <div className="flex flex-col items-center w-full">
+      <div className="flex flex-col items-center w-full absolute bottom-0 p-2">
         <div className="w-full flex flex-row items-center justify-center gap-2 h-20">
           <button
             className="border rounded-md px-2 h-full w-20 bg-red-500 font-bold"
@@ -424,13 +474,19 @@ function ActiveRound({
             {" "}
             &lt;
           </button>
-          <div className="flex-grow text-center relative">
-            {(playerGuess * 100).toFixed(2)}%
-            {isSubmitting && (
-              <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-              </div>
-            )}
+          <div className="flex-grow flex flex-col items-center justify-center">
+            <div className="text-center relative">
+              {formatProbabilityAsPercentage(playerGuess)}
+              {isSubmitting && (
+                <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+              )}
+            </div>
+            <div className="text-sm text-gray-500">
+              {formatPlusMinus(Math.round(scoreGuess(playerGuess, false)))} /{" "}
+              {formatPlusMinus(Math.round(scoreGuess(playerGuess, true)))}
+            </div>
           </div>
           <button
             className="border rounded-md px-2 h-full w-20 bg-green-300 font-bold"
