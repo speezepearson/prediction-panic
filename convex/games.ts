@@ -2,7 +2,7 @@
 
 import _ from "lodash";
 import { mutation, query, internalMutation } from "./_generated/server";
-import { ConvexError, v } from "convex/values";
+import { ConvexError, v, Validator } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { Doc, Id } from "./_generated/dataModel";
 import { internal } from "./_generated/api";
@@ -12,16 +12,16 @@ import {
   GameQuickId,
   gameQuickIdSchema,
   gameSecondsPerQuestionSchema,
+  PlayerId,
 } from "./validation";
 import z from "zod/v4";
 
 export const createGame = mutation({
-  args: {},
-  handler: async (ctx) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
-      throw new Error("User must be logged in to create a game.");
-    }
+  args: {
+    playerId: v.string() as Validator<PlayerId>,
+    playerName: v.string(),
+  },
+  handler: async (ctx, { playerId, playerName }) => {
     let quickId: GameQuickId;
     let quickIdTaken: boolean;
     do {
@@ -42,7 +42,7 @@ export const createGame = mutation({
       started: false,
       roundsRemaining: 100,
       secondsPerQuestion: 10,
-      players: [userId],
+      players: { [playerId]: { name: playerName } },
       finishedRounds: [],
     });
     return { _id: gameId, quickId };
@@ -50,36 +50,38 @@ export const createGame = mutation({
 });
 
 export const joinGame = mutation({
-  args: { quickId: v.string() },
+  args: {
+    quickId: v.string(),
+    playerId: v.string() as Validator<PlayerId>,
+    playerName: v.string(),
+  },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
-      throw new Error("User must be logged in to join a game.");
-    }
     const quickId = gameQuickIdSchema.parse(args.quickId.toUpperCase());
     const game = await ctx.db
       .query("games")
       .withIndex("by_quickId", (q) => q.eq("quickId", quickId))
       .unique();
     if (!game) throw new Error("Game not found.");
-    if (!game.players.includes(userId)) {
-      await ctx.db.patch(game._id, { players: [...game.players, userId] });
+    if (!game.players[args.playerId]) {
+      await ctx.db.patch(game._id, {
+        players: {
+          ...game.players,
+          [args.playerId]: { name: args.playerName },
+        },
+      });
     }
     return game._id;
   },
 });
 
 export const leaveGame = mutation({
-  args: { gameId: v.id("games") },
+  args: { gameId: v.id("games"), playerId: v.string() as Validator<PlayerId> },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
-      throw new Error("User must be logged in to leave a game.");
-    }
     const game = await ctx.db.get(args.gameId);
     if (!game) throw new Error("Game not found.");
+    delete game.players[args.playerId];
     await ctx.db.patch(game._id, {
-      players: game.players.filter((p) => p !== userId),
+      players: game.players,
     });
     return game._id;
   },
@@ -97,7 +99,6 @@ export const updateGameSettings = mutation({
 
     const game = await ctx.db.get(args.gameId);
     if (!game) throw new Error("Game not found.");
-    if (!game.players.includes(userId)) throw new Error("User not in game.");
     if (game.started) throw new Error("Game started, cannot update settings.");
 
     const updates: Partial<Doc<"games">> = {};
@@ -167,7 +168,7 @@ export const tickGame = internalMutation({
         gameId,
         question: _.sample(allQuestions)!,
         guesses: Object.fromEntries(
-          game.players.map((playerId) => [playerId, 0.5])
+          Object.keys(game.players).map((playerId) => [playerId, 0.5])
         ),
       }),
       ctx.db.patch(gameId, { roundsRemaining: game.roundsRemaining - 1 }),
@@ -184,14 +185,8 @@ export const tickGame = internalMutation({
 export const startGame = mutation({
   args: { gameId: v.id("games") },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("User must be logged in.");
-
     const game = await ctx.db.get(args.gameId);
     if (!game) throw new Error("Game not found.");
-
-    if (!game.players.includes(userId))
-      throw new Error("Only players can start.");
 
     if (game.started) throw new Error("Game already started.");
     if (game.roundsRemaining <= 0) throw new Error("No rounds remaining.");
@@ -267,29 +262,8 @@ export const finalizeAndSetupNextRound = internalMutation({
 
 export const getGame = query({
   args: { gameId: v.id("games") },
-  handler: async (ctx, args) => {
-    const game = await ctx.db.get(args.gameId);
-    if (!game) return null;
-    const players = await Promise.all(
-      game.players.map(async (playerId) => {
-        const player = await ctx.db.get(playerId);
-        return player
-          ? {
-              _id: player._id,
-              name: player.name ?? player.email,
-              email: player.email,
-            }
-          : null;
-      })
-    );
-    return {
-      ...game,
-      players: players.filter((p) => p !== null) as ({
-        _id: Id<"users">;
-        name?: string;
-        email?: string;
-      } | null)[],
-    };
+  handler: async (ctx, args): Promise<null | Doc<"games">> => {
+    return await ctx.db.get(args.gameId);
   },
 });
 
@@ -307,14 +281,10 @@ export const getCurrentRound = query({
 export const setPlayerGuess = mutation({
   args: {
     gameId: v.id("games"),
+    playerId: v.string() as Validator<PlayerId>,
     guess: v.number(),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) {
-      throw new Error("Not authenticated");
-    }
-
     const currentRound = await ctx.db
       .query("currentRounds")
       .withIndex("by_gameId", (q) => q.eq("gameId", args.gameId))
@@ -327,7 +297,7 @@ export const setPlayerGuess = mutation({
     // Update the guesses map with the new guess
     const updatedGuesses = {
       ...currentRound.guesses,
-      [userId]: args.guess,
+      [args.playerId]: args.guess,
     };
 
     await ctx.db.patch(currentRound._id, {

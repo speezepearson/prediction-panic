@@ -1,24 +1,27 @@
-import {
-  Authenticated,
-  Unauthenticated,
-  useMutation,
-  useQuery,
-} from "convex/react";
+import { Authenticated, useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { SignInForm } from "./SignInForm";
-import { SignOutButton } from "./SignOutButton";
 import { Toaster, toast } from "sonner";
-import { useState, FormEvent, useMemo } from "react";
+import { useState, useMemo, createContext, useContext } from "react";
 import { GameLobby, RunningGame } from "./GameLobby";
 import { Id } from "../convex/_generated/dataModel";
-import { gameQuickIdSchema } from "../convex/validation";
+import {
+  gameQuickIdSchema,
+  LobbyGame,
+  PlayerId,
+  playerIdSchema,
+  StartedGame,
+} from "../convex/validation";
+
+const playerContext = createContext<{ id: PlayerId; name: string }>({
+  id: playerIdSchema.parse(Math.random().toString(36).substring(2, 12)),
+  name: "Anonymous",
+});
 
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm h-16 flex justify-between items-center border-b shadow-sm px-4">
-        <h2 className="text-xl font-semibold text-primary">Probability Game</h2>
-        <SignOutButton />
+        <h2 className="text-xl font-semibold text-primary">Mantic Mania</h2>
       </header>
       <main className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md mx-auto">
@@ -31,26 +34,22 @@ export default function App() {
 }
 
 function Content() {
-  const loggedInUser = useQuery(api.auth.loggedInUser);
+  const { id: playerId } = useContext(playerContext);
+  const [playerName, setPlayerName] = useState("Anonymous");
   const [currentGameId, setCurrentGameId] = useState<Id<"games"> | null>(null);
-  const currentGame = useQuery(
+  const currentGame: StartedGame | LobbyGame | null | undefined = useQuery(
     api.games.getGame,
     currentGameId ? { gameId: currentGameId } : "skip"
   );
 
   const createGame = useMutation(api.games.createGame);
 
-  if (loggedInUser === undefined) {
-    return (
-      <div className="flex justify-center items-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
   const handleCreateGame = async () => {
     try {
-      const { _id: gameId } = await createGame();
+      const { _id: gameId } = await createGame({
+        playerId,
+        playerName,
+      });
       setCurrentGameId(gameId);
     } catch (error) {
       toast.error((error as Error).message);
@@ -59,11 +58,20 @@ function Content() {
 
   if (currentGame) {
     if (currentGame.started) {
-      const g = currentGame as typeof currentGame & { started: true };
-      return <RunningGame game={g} onLeave={() => setCurrentGameId(null)} />;
+      return (
+        <RunningGame
+          game={currentGame}
+          playerId={playerId}
+          onLeave={() => setCurrentGameId(null)}
+        />
+      );
     } else {
       return (
-        <GameLobby game={currentGame} onLeave={() => setCurrentGameId(null)} />
+        <GameLobby
+          playerId={playerId}
+          game={currentGame}
+          onLeave={() => setCurrentGameId(null)}
+        />
       );
     }
   }
@@ -72,21 +80,8 @@ function Content() {
     <div className="flex flex-col gap-8">
       <div className="text-center">
         <h1 className="text-4xl font-bold text-primary mb-4">Mantic Mania</h1>
-        <Authenticated>
-          <p className="text-lg text-secondary">
-            Welcome, {loggedInUser?.name ?? loggedInUser?.email ?? "friend"}!
-          </p>
-        </Authenticated>
-        <Unauthenticated>
-          <p className="text-lg text-secondary">
-            Sign in to create or join a game.
-          </p>
-        </Unauthenticated>
+        <p className="text-lg text-secondary">Welcome, friend!</p>
       </div>
-
-      <Unauthenticated>
-        <SignInForm />
-      </Unauthenticated>
 
       <Authenticated>
         <div className="space-y-6">
@@ -112,6 +107,7 @@ function JoinGameForm({
 }: {
   setCurrentGameId: (gameId: Id<"games">) => void;
 }) {
+  const player = useContext(playerContext);
   const [quickIdField, setQuickIdField] = useState("");
   const { data: quickId, error: parseError } = useMemo(
     () => gameQuickIdSchema.safeParse(quickIdField),
@@ -128,6 +124,8 @@ function JoinGameForm({
 
     joinGameMutation({
       quickId,
+      playerId: player.id,
+      playerName: player.name,
     })
       .then((gameId) => {
         setCurrentGameId(gameId);

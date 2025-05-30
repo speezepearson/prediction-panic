@@ -1,9 +1,9 @@
 import { defineSchema, defineTable } from "convex/server";
-import { v } from "convex/values";
-import { authTables } from "@convex-dev/auth/server";
+import { v, Validator } from "convex/values";
+import { PlayerId } from "./validation";
 
 const vQuestion = v.object({ text: v.string(), answer: v.boolean() });
-const vPlayerGuesses = v.record(v.id("users"), v.number());
+const vPlayerGuesses = v.record(v.string() as Validator<PlayerId>, v.number());
 
 const applicationTables = {
   games: defineTable({
@@ -12,12 +12,15 @@ const applicationTables = {
     started: v.boolean(),
     roundsRemaining: v.number(),
     secondsPerQuestion: v.number(),
-    players: v.array(v.id("users")),
+    players: v.record(
+      v.string() as Validator<PlayerId>,
+      v.object({ name: v.string() })
+    ),
     finishedRounds: v.array(
       v.object({
         question: vQuestion,
         guesses: vPlayerGuesses,
-      }),
+      })
     ),
   }).index("by_quickId", ["quickId"]),
 
@@ -29,6 +32,5 @@ const applicationTables = {
 };
 
 export default defineSchema({
-  ...authTables,
   ...applicationTables,
 });
