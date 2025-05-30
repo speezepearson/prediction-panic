@@ -416,9 +416,16 @@ function ActiveRound({
     debouncedSetGuess({
       gameId: game._id,
       playerId,
+      questionText: currentRound.question.text,
       guess: playerGuess,
     });
-  }, [playerGuess, debouncedSetGuess, game._id, playerId]);
+  }, [
+    playerGuess,
+    debouncedSetGuess,
+    game._id,
+    playerId,
+    currentRound.question.text,
+  ]);
 
   const nudgeGuess = useCallback(
     (dir: "up" | "down", strength: "weak" | "strong") => {

@@ -247,6 +247,7 @@ export const setPlayerGuess = mutation({
   args: {
     gameId: v.id("games"),
     playerId: v.string() as Validator<PlayerId>,
+    questionText: v.string(),
     guess: v.number(),
   },
   handler: async (ctx, args) => {
@@ -256,7 +257,25 @@ export const setPlayerGuess = mutation({
       .unique();
 
     if (!currentRound) {
-      throw new ConvexError("No active round found");
+      // The user may have been racing against the end-of-round ticker. In that case, let's be nice and update the last finished round.
+      const game = await ctx.db.get(args.gameId);
+      if (!game) throw new ConvexError("Game not found");
+      const lastFinishedRound =
+        game.finishedRounds[game.finishedRounds.length - 1];
+      if (lastFinishedRound.question.text !== args.questionText) {
+        throw new ConvexError("Internal error: Question text mismatch");
+      }
+      game.finishedRounds[game.finishedRounds.length - 1].guesses[
+        args.playerId
+      ] = args.guess;
+      await ctx.db.patch(game._id, {
+        finishedRounds: game.finishedRounds,
+      });
+      return;
+    }
+
+    if (currentRound.question.text !== args.questionText) {
+      throw new ConvexError("Internal error: Question text mismatch");
     }
 
     // Update the guesses map with the new guess
