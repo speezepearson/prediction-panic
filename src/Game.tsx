@@ -142,15 +142,12 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
         </button>
       </div>
 
-      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
-        <p className="text-lg font-semibold text-blue-700">
-          Game ID:{" "}
-          <span className="text-2xl font-bold text-blue-900 tracking-wider">
-            {game.quickId}
-          </span>
-        </p>
-        <p className="text-sm text-blue-600">
-          Share this ID with friends to join!
+      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md text-center">
+        <div className="text-4xl font-bold text-blue-900 tracking-wider mb-2">
+          {game.quickId}
+        </div>
+        <p className="text-sm text-blue-600 text-center">
+          Share this ID with friends so they can join!
         </p>
       </div>
 
