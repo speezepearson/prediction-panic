@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { toast } from "sonner";
@@ -270,7 +270,7 @@ function CurrentRound({
   });
 
   return (
-    <div className="w-full border border-green-300 bg-green-50 rounded-md">
+    <div className="w-full border border-blue-300 bg-blue-50 rounded-md">
       {currentRound === undefined ? (
         <div className="flex justify-center items-center h-full">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -281,7 +281,7 @@ function CurrentRound({
           <ScorePlot game={game} playerId={playerId} />
         </div>
       ) : (
-        <div className="h-60">
+        <div className="h-80">
           {currentRound === null ? (
             <div className="flex justify-center items-center h-full">
               Prepare!
@@ -309,42 +309,109 @@ function ActiveRound({
   playerId: PlayerId;
 }) {
   const setPlayerGuessMutation = useMutation(api.games.setPlayerGuess);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const debouncedSetGuess = useMemo(
+    () =>
+      _.throttle((...args: Parameters<typeof setPlayerGuessMutation>) => {
+        setIsSubmitting(true);
+        setPlayerGuessMutation(...args)
+          .catch((error) => toast.error((error as Error).message))
+          .finally(() => setIsSubmitting(false));
+      }, 200),
+    [setPlayerGuessMutation]
+  );
 
   const [playerGuess, setPlayerGuess] = useState(0.5);
+  useEffect(() => {
+    debouncedSetGuess({
+      gameId: game._id,
+      playerId,
+      guess: playerGuess,
+    });
+  }, [playerGuess, debouncedSetGuess, game._id, playerId]);
+
+  const nudgeGuess = useCallback(
+    (dir: "up" | "down", strength: "weak" | "strong") => {
+      const oddsFactor = strength === "weak" ? 1.2 : 2;
+      const odds = playerGuess / (1 - playerGuess);
+      const newOdds = odds * (dir === "up" ? oddsFactor : 1 / oddsFactor);
+      setPlayerGuess(newOdds / (1 + newOdds));
+    },
+    [playerGuess]
+  );
+
+  // adjust the guess when the player hits the left/right arrow keys
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        nudgeGuess("down", e.shiftKey ? "strong" : "weak");
+      }
+      if (e.key === "ArrowRight") {
+        nudgeGuess("up", e.shiftKey ? "strong" : "weak");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [nudgeGuess]);
 
   return (
     <div className="flex flex-col items-center p-2 h-full">
-      <h3 className="text-xl font-semibold text-green-700 mb-2">
+      <h3 className="text-xl font-semibold text-blue-700 mb-2">
         Current Statement:
       </h3>
       <p className="text-lg text-gray-800">{currentRound.question.text}</p>
 
       <div className="flex-grow"></div>
 
-      <div className="flex flex-row items-center justify-center w-full gap-2">
-        <input
-          className="flex-grow w-full"
-          type="range"
-          value={playerGuess}
-          min={0}
-          max={1}
-          step={0.001}
-          onChange={(e) => {
-            setPlayerGuess(parseFloat(e.target.value));
-          }}
-        />
-        <button
-          onClick={() => {
-            setPlayerGuessMutation({
-              gameId: game._id,
-              playerId,
-              guess: playerGuess,
-            }).catch((error) => toast.error((error as Error).message));
-          }}
-          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Submit Probability
-        </button>
+      <div className="flex flex-col items-center w-full">
+        <div className="w-full flex flex-row items-center justify-center gap-2 h-20">
+          <button
+            className="border rounded-md px-2 h-full w-20 bg-red-500 font-bold"
+            onClick={() => nudgeGuess("down", "strong")}
+          >
+            &lt;&lt;
+          </button>
+          <button
+            className="border rounded-md px-2 h-full w-20 bg-red-300 font-bold"
+            onClick={() => nudgeGuess("down", "weak")}
+          >
+            {" "}
+            &lt;
+          </button>
+          <div className="flex-grow text-center relative">
+            {(playerGuess * 100).toFixed(2)}%
+            {isSubmitting && (
+              <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            )}
+          </div>
+          <button
+            className="border rounded-md px-2 h-full w-20 bg-green-300 font-bold"
+            onClick={() => nudgeGuess("up", "weak")}
+          >
+            &gt;
+          </button>
+          <button
+            className="border rounded-md px-2 h-full w-20 bg-green-500 font-bold"
+            onClick={() => nudgeGuess("up", "strong")}
+          >
+            &gt;&gt;
+          </button>
+        </div>
+        <div className="flex flex-row items-center justify-center w-full gap-2">
+          <input
+            className="flex-grow w-full"
+            type="range"
+            value={playerGuess}
+            min={0}
+            max={1}
+            step={0.001}
+            onChange={(e) => {
+              setPlayerGuess(parseFloat(e.target.value));
+            }}
+          />
+        </div>
       </div>
     </div>
   );
