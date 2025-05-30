@@ -6,14 +6,17 @@ import { toast } from "sonner";
 import {
   gameNumRoundsSchema,
   gameSecondsPerQuestionSchema,
+  LobbyGame,
   PlayerId,
+  StartedGame,
 } from "../convex/validation";
 import z from "zod/v4";
 import { Doc } from "../convex/_generated/dataModel";
 import { getRecordEntries } from "./lib/utils";
+import { CalibrationData, CalibrationPlot } from "./CalibrationPlot";
 
 interface GameLobbyProps {
-  game: Doc<"games"> & { started: false };
+  game: LobbyGame;
   playerId: PlayerId;
   onLeave: () => void;
 }
@@ -129,7 +132,7 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
           onClick={onLeave}
           className="px-4 py-2 text-sm rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
         >
-          Leave Lobby
+          Leave
         </button>
       </div>
 
@@ -239,7 +242,7 @@ export function RunningGame({
   onLeave: () => void;
 }) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg mx-auto">
+    <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-6 pb-4 border-b">
         <h2 className="text-3xl font-bold text-primary">Game {game.quickId}</h2>
         <button
@@ -259,67 +262,109 @@ function CurrentRound({
   game,
   playerId,
 }: {
-  game: Exclude<Awaited<typeof api.games.getGame._returnType>, null>;
+  game: StartedGame;
   playerId: PlayerId;
 }) {
   const currentRound = useQuery(api.games.getCurrentRound, {
     gameId: game._id,
   });
-  useEffect(() => {
-    setPlayerGuess(0.5);
-  }, [currentRound]);
-
-  const setPlayerGuessMutation = useMutation(api.games.setPlayerGuess);
-
-  const [playerGuess, setPlayerGuess] = useState(0.5);
 
   return (
-    <div className="w-full h-60 border border-green-300 bg-green-50 rounded-md">
+    <div className="w-full border border-green-300 bg-green-50 rounded-md">
       {currentRound === undefined ? (
         <div className="flex justify-center items-center h-full">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
       ) : game.roundsRemaining === 0 ? (
-        <div className="flex justify-center items-center h-full">
+        <div className="flex flex-col justify-center items-center h-full w-full">
           <p className="text-lg text-gray-800">Game over!</p>
+          <ScorePlot game={game} playerId={playerId} />
         </div>
-      ) : currentRound === null ? (
-        <div className="flex justify-center items-center h-full">Prepare!</div>
       ) : (
-        <div className="flex flex-col items-center h-full p-2">
-          <h3 className="text-xl font-semibold text-green-700 mb-2">
-            Current Statement:
-          </h3>
-          <p className="text-lg text-gray-800">{currentRound.question.text}</p>
-
-          <div className="flex grow"></div>
-          <div className="flex flex-row items-center justify-center w-full gap-2">
-            <input
-              className="flex-grow w-full"
-              type="range"
-              value={playerGuess}
-              min={0}
-              max={1}
-              step={0.001}
-              onChange={(e) => {
-                setPlayerGuess(parseFloat(e.target.value));
-              }}
+        <div className="h-60">
+          {currentRound === null ? (
+            <div className="flex justify-center items-center h-full">
+              Prepare!
+            </div>
+          ) : (
+            <ActiveRound
+              game={game}
+              currentRound={currentRound}
+              playerId={playerId}
             />
-            <button
-              onClick={() => {
-                setPlayerGuessMutation({
-                  gameId: game._id,
-                  playerId,
-                  guess: playerGuess,
-                }).catch((error) => toast.error((error as Error).message));
-              }}
-              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Submit Probability
-            </button>
-          </div>
+          )}
         </div>
       )}
+    </div>
+  );
+}
+
+function ActiveRound({
+  game,
+  currentRound,
+  playerId,
+}: {
+  game: StartedGame;
+  currentRound: Doc<"currentRounds">;
+  playerId: PlayerId;
+}) {
+  const setPlayerGuessMutation = useMutation(api.games.setPlayerGuess);
+
+  const [playerGuess, setPlayerGuess] = useState(0.5);
+
+  return (
+    <div className="flex flex-col items-center p-2 h-full">
+      <h3 className="text-xl font-semibold text-green-700 mb-2">
+        Current Statement:
+      </h3>
+      <p className="text-lg text-gray-800">{currentRound.question.text}</p>
+
+      <div className="flex-grow"></div>
+
+      <div className="flex flex-row items-center justify-center w-full gap-2">
+        <input
+          className="flex-grow w-full"
+          type="range"
+          value={playerGuess}
+          min={0}
+          max={1}
+          step={0.001}
+          onChange={(e) => {
+            setPlayerGuess(parseFloat(e.target.value));
+          }}
+        />
+        <button
+          onClick={() => {
+            setPlayerGuessMutation({
+              gameId: game._id,
+              playerId,
+              guess: playerGuess,
+            }).catch((error) => toast.error((error as Error).message));
+          }}
+          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Submit Probability
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ScorePlot({
+  game,
+  playerId,
+}: {
+  game: Doc<"games">;
+  playerId: PlayerId;
+}) {
+  const data: CalibrationData[] = useMemo(() => {
+    return game.finishedRounds
+      .map((r) => ({ prob: r.guesses[playerId], actual: r.question.answer }))
+      .filter((r) => r.prob !== undefined);
+  }, [game, playerId]);
+  return (
+    <div>
+      <CalibrationPlot data={data} />
     </div>
   );
 }

@@ -3,7 +3,6 @@
 import _ from "lodash";
 import { mutation, query, internalMutation } from "./_generated/server";
 import { ConvexError, v, Validator } from "convex/values";
-import { getAuthUserId } from "@convex-dev/auth/server";
 import { Doc, Id } from "./_generated/dataModel";
 import { internal } from "./_generated/api";
 import allQuestions from "./questions.json";
@@ -94,9 +93,6 @@ export const updateGameSettings = mutation({
     secondsPerQuestion: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("User must be logged in.");
-
     const game = await ctx.db.get(args.gameId);
     if (!game) throw new Error("Game not found.");
     if (game.started) throw new Error("Game started, cannot update settings.");
@@ -130,7 +126,6 @@ export const updateGameSettings = mutation({
   },
 });
 
-// New internal mutation to setup round with a fetched question
 export const tickGame = internalMutation({
   args: {
     gameId: v.id("games"),
@@ -159,6 +154,8 @@ export const tickGame = internalMutation({
         }),
         ctx.db.delete(currentRound._id),
       ]);
+      await ctx.scheduler.runAfter(1000, internal.games.tickGame, { gameId });
+      return;
     }
 
     if (game.roundsRemaining <= 0) return;

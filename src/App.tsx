@@ -1,4 +1,4 @@
-import { Authenticated, useMutation, useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Toaster, toast } from "sonner";
 import { useState, useMemo, createContext, useContext } from "react";
@@ -11,6 +11,7 @@ import {
   playerIdSchema,
   StartedGame,
 } from "../convex/validation";
+import { CalibrationPlot } from "./CalibrationPlot";
 
 const playerContext = createContext<{ id: PlayerId; name: string }>({
   id: playerIdSchema.parse(Math.random().toString(36).substring(2, 12)),
@@ -24,7 +25,7 @@ export default function App() {
         <h2 className="text-xl font-semibold text-primary">Mantic Mania</h2>
       </header>
       <main className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-md mx-auto">
+        <div className="w-full mx-auto">
           <Content />
         </div>
       </main>
@@ -77,27 +78,25 @@ function Content() {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 max-w-md mx-auto">
       <div className="text-center">
         <h1 className="text-4xl font-bold text-primary mb-4">Mantic Mania</h1>
         <p className="text-lg text-secondary">Welcome, friend!</p>
       </div>
 
-      <Authenticated>
-        <div className="space-y-6">
-          <div>
-            <button
-              onClick={() => {
-                handleCreateGame().catch(console.error);
-              }}
-              className="w-full px-4 py-3 rounded bg-primary text-white font-semibold hover:bg-primary-hover transition-colors shadow-sm hover:shadow"
-            >
-              Create New Game
-            </button>
-          </div>
-          <JoinGameForm setCurrentGameId={setCurrentGameId} />
+      <div className="space-y-6">
+        <div>
+          <button
+            onClick={() => {
+              handleCreateGame().catch(console.error);
+            }}
+            className="w-full px-4 py-3 rounded bg-primary text-white font-semibold hover:bg-primary-hover transition-colors shadow-sm hover:shadow"
+          >
+            Create New Game
+          </button>
         </div>
-      </Authenticated>
+        <JoinGameForm setCurrentGameId={setCurrentGameId} />
+      </div>
     </div>
   );
 }
