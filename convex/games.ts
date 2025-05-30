@@ -62,10 +62,25 @@ export const joinGame = mutation({
       .withIndex("by_quickId", (q) => q.eq("quickId", quickId))
       .unique();
     if (!game) throw new Error("Game not found.");
-    if (game.started) throw new Error("Game has already started.");
     if (!game.players.includes(userId)) {
       await ctx.db.patch(game._id, { players: [...game.players, userId] });
     }
+    return game._id;
+  },
+});
+
+export const leaveGame = mutation({
+  args: { gameId: v.id("games") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("User must be logged in to leave a game.");
+    }
+    const game = await ctx.db.get(args.gameId);
+    if (!game) throw new Error("Game not found.");
+    await ctx.db.patch(game._id, {
+      players: game.players.filter((p) => p !== userId),
+    });
     return game._id;
   },
 });

@@ -8,9 +8,10 @@ import { api } from "../convex/_generated/api";
 import { SignInForm } from "./SignInForm";
 import { SignOutButton } from "./SignOutButton";
 import { Toaster, toast } from "sonner";
-import { useState, FormEvent } from "react";
-import { GameLobby } from "./GameLobby";
+import { useState, FormEvent, useMemo } from "react";
+import { GameLobby, RunningGame } from "./GameLobby";
 import { Id } from "../convex/_generated/dataModel";
+import { gameQuickIdSchema } from "../convex/validation";
 
 export default function App() {
   return (
@@ -32,6 +33,10 @@ export default function App() {
 function Content() {
   const loggedInUser = useQuery(api.auth.loggedInUser);
   const [currentGameId, setCurrentGameId] = useState<Id<"games"> | null>(null);
+  const currentGame = useQuery(
+    api.games.getGame,
+    currentGameId ? { gameId: currentGameId } : "skip"
+  );
 
   const createGame = useMutation(api.games.createGame);
 
@@ -47,27 +52,26 @@ function Content() {
     try {
       const { _id: gameId } = await createGame();
       setCurrentGameId(gameId);
-      toast.success("Game created!");
     } catch (error) {
       toast.error((error as Error).message);
     }
   };
 
-  if (currentGameId) {
-    return (
-      <GameLobby
-        gameId={currentGameId}
-        onLeave={() => setCurrentGameId(null)}
-      />
-    );
+  if (currentGame) {
+    if (currentGame.started) {
+      const g = currentGame as typeof currentGame & { started: true };
+      return <RunningGame game={g} onLeave={() => setCurrentGameId(null)} />;
+    } else {
+      return (
+        <GameLobby game={currentGame} onLeave={() => setCurrentGameId(null)} />
+      );
+    }
   }
 
   return (
     <div className="flex flex-col gap-8">
       <div className="text-center">
-        <h1 className="text-4xl font-bold text-primary mb-4">
-          Probability Game
-        </h1>
+        <h1 className="text-4xl font-bold text-primary mb-4">Mantic Mania</h1>
         <Authenticated>
           <p className="text-lg text-secondary">
             Welcome, {loggedInUser?.name ?? loggedInUser?.email ?? "friend"}!
@@ -108,33 +112,37 @@ function JoinGameForm({
 }: {
   setCurrentGameId: (gameId: Id<"games">) => void;
 }) {
-  const [joinQuickId, setJoinQuickId] = useState("");
+  const [quickIdField, setQuickIdField] = useState("");
+  const { data: quickId, error: parseError } = useMemo(
+    () => gameQuickIdSchema.safeParse(quickIdField),
+    [quickIdField]
+  );
   const joinGameMutation = useMutation(api.games.joinGame);
+  const [isJoining, setIsJoining] = useState(false);
+  const [joinError, setJoinError] = useState<string | null>(null);
 
-  const handleJoinGame = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!joinQuickId.trim()) {
-      toast.error("Please enter a Game ID.");
-      return;
-    }
-    try {
-      const gameId = await joinGameMutation({
-        quickId: joinQuickId.trim().toUpperCase(),
+  const handleJoinGame = () => {
+    if (parseError || isJoining) return;
+    setIsJoining(true);
+    setJoinError(null);
+
+    joinGameMutation({
+      quickId,
+    })
+      .then((gameId) => {
+        setCurrentGameId(gameId);
+        toast.success("Joined game!");
+      })
+      .catch((error) => {
+        setJoinError((error as Error).message);
+      })
+      .finally(() => {
+        setIsJoining(false);
       });
-      setCurrentGameId(gameId);
-      toast.success("Joined game!");
-    } catch (error) {
-      toast.error((error as Error).message);
-    }
   };
 
   return (
-    <form
-      onSubmit={(e) => {
-        handleJoinGame(e).catch(console.error);
-      }}
-      className="space-y-4"
-    >
+    <div className="space-y-4">
       <h3 className="text-xl font-semibold text-center text-gray-700">
         Join Existing Game
       </h3>
@@ -148,19 +156,27 @@ function JoinGameForm({
         <input
           id="quickId"
           type="text"
-          value={joinQuickId}
-          onChange={(e) => setJoinQuickId(e.target.value)}
+          value={quickIdField}
+          onChange={(e) => setQuickIdField(e.target.value)}
+          disabled={isJoining}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleJoinGame();
+            }
+          }}
           maxLength={4}
           placeholder="ABCD"
           className="w-full px-4 py-3 rounded-md bg-white border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm hover:shadow"
         />
       </div>
       <button
-        type="submit"
-        className="w-full px-4 py-3 rounded bg-secondary text-white font-semibold hover:bg-secondary-hover transition-colors shadow-sm hover:shadow"
+        disabled={isJoining || !quickId}
+        onClick={handleJoinGame}
+        className="w-full px-4 py-3 rounded bg-secondary text-white font-semibold hover:not:disabled:bg-secondary-hover transition-colors shadow-sm hover:shadow disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Join Game
       </button>
-    </form>
+      {joinError && <p className="text-red-500">{joinError}</p>}
+    </div>
   );
 }

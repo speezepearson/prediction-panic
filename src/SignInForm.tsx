@@ -1,12 +1,24 @@
 "use client";
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useState } from "react";
+import { useMutation } from "convex/react";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
+import { api } from "../convex/_generated/api";
 
 export function SignInForm() {
   const { signIn } = useAuthActions();
   const [flow, setFlow] = useState<"signIn" | "signUp">("signIn");
   const [submitting, setSubmitting] = useState(false);
+
+  const [anonymousName, setAnonymousName] = useState("");
+  const setName = useMutation(api.auth.setName);
+  const anonymousSignIn = useCallback(() => {
+    if (!anonymousName) return;
+
+    signIn("anonymous", { params: { name: "sdf" } })
+      // .then(() => setName({ name: anonymousName }))
+      .catch(console.error);
+  }, [anonymousName, setName, signIn]);
 
   return (
     <div className="w-full">
@@ -69,9 +81,26 @@ export function SignInForm() {
         <span className="mx-4 text-secondary">or</span>
         <hr className="my-4 grow border-gray-200" />
       </div>
-      <button className="auth-button" onClick={() => void signIn("anonymous")}>
-        Sign in anonymously
-      </button>
+      <div className="flex flex-row gap-2 items-center justify-center">
+        <input
+          type="text"
+          placeholder="Name"
+          value={anonymousName}
+          onChange={(e) => setAnonymousName(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              anonymousSignIn();
+            }
+          }}
+        />
+        <button
+          className="auth-button"
+          onClick={anonymousSignIn}
+          disabled={anonymousName.length === 0}
+        >
+          Sign in anonymously
+        </button>
+      </div>
     </div>
   );
 }

@@ -2,7 +2,6 @@ import _ from "lodash";
 import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { Doc, Id } from "../convex/_generated/dataModel";
 import { toast } from "sonner";
 import {
   gameNumRoundsSchema,
@@ -11,12 +10,11 @@ import {
 import z from "zod/v4";
 
 interface GameLobbyProps {
-  gameId: Id<"games">;
+  game: Exclude<Awaited<typeof api.games.getGame._returnType>, null>;
   onLeave: () => void;
 }
 
-export function GameLobby({ gameId, onLeave }: GameLobbyProps) {
-  const game = useQuery(api.games.getGame, { gameId });
+export function GameLobby({ game, onLeave }: GameLobbyProps) {
   const updateSettingsMutation = useMutation(api.games.updateGameSettings);
   const startGameMutation = useMutation(api.games.startGame);
   const loggedInUser = useQuery(api.auth.loggedInUser);
@@ -243,6 +241,59 @@ export function GameLobby({ gameId, onLeave }: GameLobbyProps) {
   );
 }
 
+export function RunningGame({
+  game,
+  onLeave,
+}: {
+  game: Exclude<Awaited<typeof api.games.getGame._returnType>, null> & {
+    started: true;
+  };
+  onLeave: () => void;
+}) {
+  const loggedInUser = useQuery(api.auth.loggedInUser);
+
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg mx-auto">
+      <div className="flex justify-between items-center mb-6 pb-4 border-b">
+        <h2 className="text-3xl font-bold text-primary">Game Lobby</h2>
+        <button
+          onClick={onLeave}
+          className="px-4 py-2 text-sm rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
+        >
+          Leave Game
+        </button>
+      </div>
+
+      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
+        <p className="text-lg font-semibold text-blue-700">
+          Game ID:{" "}
+          <span className="text-2xl font-bold text-blue-900 tracking-wider">
+            {game.quickId}
+          </span>
+        </p>
+      </div>
+
+      {game.started && <CurrentRound game={game} />}
+
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold text-gray-700 mb-2">Players:</h3>
+        {game.players.length > 0 ? (
+          <ul className="space-y-1 list-disc list-inside bg-gray-50 p-3 rounded-md">
+            {game.players.map((player) => (
+              <li key={player?._id} className="text-gray-800">
+                {player?.name ?? "Anonymous Player"}
+                {player?._id === loggedInUser?._id && " (You)"}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500">No players yet.</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function CurrentRound({
   game,
 }: {
@@ -253,7 +304,7 @@ function CurrentRound({
     gameId: game._id,
   });
   useEffect(() => {
-    console.log({ currentRound });
+    setPlayerGuess(0.5);
   }, [currentRound]);
 
   const setPlayerGuessMutation = useMutation(api.games.setPlayerGuess);
@@ -262,48 +313,52 @@ function CurrentRound({
   const canGuess = !!loggedInUser;
 
   return (
-    <div className="h-40 border border-green-300 bg-green-50 rounded-md">
-      {!currentRound ? (
-        game.roundsRemaining === 0 ? (
-          <div className="flex justify-center items-center h-full">
-            <p className="text-lg text-gray-800">Game over!</p>
-          </div>
-        ) : (
-          <div className="flex justify-center items-center h-full">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          </div>
-        )
+    <div className="w-full h-60 border border-green-300 bg-green-50 rounded-md">
+      {currentRound === undefined ? (
+        <div className="flex justify-center items-center h-full">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      ) : game.roundsRemaining === 0 ? (
+        <div className="flex justify-center items-center h-full">
+          <p className="text-lg text-gray-800">Game over!</p>
+        </div>
+      ) : currentRound === null ? (
+        <div className="flex justify-center items-center h-full">Prepare!</div>
       ) : (
-        <>
+        <div className="flex flex-col items-center h-full p-2">
           <h3 className="text-xl font-semibold text-green-700 mb-2">
-            Current Question:
+            Current Statement:
           </h3>
           <p className="text-lg text-gray-800">{currentRound.question.text}</p>
 
-          <input
-            type="range"
-            value={playerGuess}
-            min={0}
-            max={1}
-            step={0.001}
-            disabled={!canGuess}
-            onChange={(e) => {
-              setPlayerGuess(parseFloat(e.target.value));
-            }}
-          />
-          <button
-            disabled={!canGuess}
-            onClick={() => {
-              setPlayerGuessMutation({
-                gameId: game._id,
-                guess: playerGuess,
-              }).catch((error) => toast.error((error as Error).message));
-            }}
-            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Submit Probability
-          </button>
-        </>
+          <div className="flex grow"></div>
+          <div className="flex flex-row items-center justify-center w-full gap-2">
+            <input
+              className="flex-grow w-full"
+              type="range"
+              value={playerGuess}
+              min={0}
+              max={1}
+              step={0.001}
+              disabled={!canGuess}
+              onChange={(e) => {
+                setPlayerGuess(parseFloat(e.target.value));
+              }}
+            />
+            <button
+              disabled={!canGuess}
+              onClick={() => {
+                setPlayerGuessMutation({
+                  gameId: game._id,
+                  guess: playerGuess,
+                }).catch((error) => toast.error((error as Error).message));
+              }}
+              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Submit Probability
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
