@@ -3,7 +3,7 @@
 import _ from "lodash";
 import { mutation, query, internalMutation } from "./_generated/server";
 import { ConvexError, v, Validator } from "convex/values";
-import { Doc, Id } from "./_generated/dataModel";
+import { Doc } from "./_generated/dataModel";
 import { internal } from "./_generated/api";
 import allQuestions from "./questions.json";
 import {
@@ -14,6 +14,8 @@ import {
   PlayerId,
 } from "./validation";
 import z from "zod/v4";
+
+const INTER_ROUND_DELAY = 300;
 
 export const createGame = mutation({
   args: {
@@ -164,7 +166,9 @@ export const tickGame = internalMutation({
         }),
         ctx.db.delete(currentRound._id),
       ]);
-      await ctx.scheduler.runAfter(1000, internal.games.tickGame, { gameId });
+      await ctx.scheduler.runAfter(INTER_ROUND_DELAY, internal.games.tickGame, {
+        gameId,
+      });
       return;
     }
 
