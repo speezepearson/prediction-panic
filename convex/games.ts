@@ -12,6 +12,7 @@ import {
   gameQuickIdSchema,
   gameSecondsPerQuestionSchema,
   PlayerId,
+  Question,
 } from "./validation";
 import z from "zod/v4";
 
@@ -174,10 +175,17 @@ export const tickGame = internalMutation({
 
     if (game.roundsRemaining <= 0) return;
 
+    const askedQuestions = new Set(
+      game.finishedRounds.map((round) => round.question.text)
+    );
+    const nextQuestion = _.sample(
+      allQuestions.filter((question) => !askedQuestions.has(question.text))
+    )!;
+
     await Promise.all([
       ctx.db.insert("currentRounds", {
         gameId,
-        question: _.sample(allQuestions)!,
+        question: nextQuestion,
         guesses: Object.fromEntries(
           Object.keys(game.players).map((playerId) => [playerId, 0.5])
         ),

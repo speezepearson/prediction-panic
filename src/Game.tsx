@@ -31,72 +31,76 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
   const updateSettingsMutation = useMutation(api.games.updateGameSettings);
   const startGameMutation = useMutation(api.games.startGame);
 
-  const [rounds, setRounds] = useState(100);
-  const [secondsPerQuestion, setSecondsPerQuestion] = useState(10);
-
-  const updateServerRounds = useMemo(
-    () =>
-      _.debounce(async (rounds: number) => {
-        if (!game) return;
-        const validatedRounds = gameNumRoundsSchema.safeParse(rounds);
-        if (validatedRounds.error) {
-          toast.error(
-            <>
-              Invalid number of rounds:
-              <pre>{z.prettifyError(validatedRounds.error)}</pre>
-            </>
-          );
-          return;
-        }
-        try {
-          await updateSettingsMutation({
-            gameId: game._id,
-            roundsRemaining: validatedRounds.data,
-          });
-          toast.success("Settings updated!");
-        } catch (error) {
-          toast.error((error as Error).message);
-        }
-      }, 500),
-    [game, updateSettingsMutation]
-  );
+  const [roundsF, setRoundsF] = useState(game.roundsRemaining.toString());
+  const [roundsError, setRoundsError] = useState<string | null>(null);
   useEffect(() => {
-    console.log({ game });
-  }, [game]);
+    const { error } = gameNumRoundsSchema.safeParse(parseInt(roundsF));
+    setRoundsError(error ? z.prettifyError(error) : null);
+  }, [roundsF]);
 
-  const updateServerSecondsPerQuestion = useMemo(
+  const [secondsPerQuestionF, setSecondsPerQuestionF] = useState(
+    game.secondsPerQuestion.toString()
+  );
+  const [secondsPerQuestionError, setSecondsPerQuestionError] = useState<
+    string | null
+  >(null);
+  useEffect(() => {
+    const { error } = gameSecondsPerQuestionSchema.safeParse(
+      parseInt(secondsPerQuestionF)
+    );
+    setSecondsPerQuestionError(error ? z.prettifyError(error) : null);
+  }, [secondsPerQuestionF]);
+
+  const [isUpdatingSettings, setIsUpdatingSettings] = useState(false);
+  const debouncedUpdateSettingsMutation = useMemo(
     () =>
-      _.debounce(async (secondsPerQuestion: number) => {
-        if (!game) return;
-        const validatedSecondsPerQuestion =
-          gameSecondsPerQuestionSchema.safeParse(secondsPerQuestion);
-        console.log("SRP", { validatedSecondsPerQuestion });
-        if (validatedSecondsPerQuestion.error) {
-          toast.error(
-            <>
-              Invalid number of seconds per question:
-              <pre>{z.prettifyError(validatedSecondsPerQuestion.error)}</pre>
-            </>
-          );
-          return;
-        }
-        try {
-          await updateSettingsMutation({
+      _.debounce(
+        ({
+          roundsF,
+          secondsPerQuestionF,
+        }: {
+          roundsF?: string;
+          secondsPerQuestionF?: string;
+        }) => {
+          const rounds =
+            roundsF === undefined
+              ? undefined
+              : gameNumRoundsSchema.safeParse(parseInt(roundsF)).data;
+          const secondsPerQuestion =
+            secondsPerQuestionF === undefined
+              ? undefined
+              : gameSecondsPerQuestionSchema.safeParse(
+                  parseInt(secondsPerQuestionF)
+                ).data;
+          if (
+            (rounds === undefined || rounds === game.roundsRemaining) &&
+            (secondsPerQuestion === undefined ||
+              secondsPerQuestion === game.secondsPerQuestion)
+          )
+            return;
+          setIsUpdatingSettings(true);
+          updateSettingsMutation({
             gameId: game._id,
-            secondsPerQuestion: validatedSecondsPerQuestion.data,
-          });
-          toast.success("Settings updated!");
-        } catch (error) {
-          toast.error((error as Error).message);
-        }
-      }, 500),
+            roundsRemaining: rounds,
+            secondsPerQuestion: secondsPerQuestion,
+          })
+            .then(() => {
+              toast.success("Settings updated!");
+            })
+            .catch((error) => toast.error((error as Error).message))
+            .finally(() => {
+              setIsUpdatingSettings(false);
+            });
+        },
+        300
+      ),
     [game, updateSettingsMutation]
   );
 
   useEffect(() => {
     if (game) {
-      setRounds(game.roundsRemaining);
-      setSecondsPerQuestion(game.secondsPerQuestion);
+      setRoundsF(game.roundsRemaining.toString());
+      setSecondsPerQuestionF(game.secondsPerQuestion.toString());
     }
   }, [game]);
 
@@ -118,9 +122,7 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
     );
   }
 
-  const canEditSettings = !game.started;
-  const canStartGame = !game.started && game.roundsRemaining > 0;
-
+  const canStartGame = !game.started && !isUpdatingSettings;
   const handleStartGame = async () => {
     try {
       await startGameMutation({ gameId: game._id });
@@ -141,7 +143,6 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
           Leave
         </button>
       </div>
-
       <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md text-center">
         <div className="text-4xl font-bold text-blue-900 tracking-wider mb-2">
           {game.quickId}
@@ -150,10 +151,9 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
           Share this ID with friends so they can join!
         </p>
       </div>
-
       <div className="mb-6">
-        <h3 className="text-xl font-semibold text-gray-700 mb-2">Players:</h3>
-        <ul className="space-y-1 list-disc list-inside bg-gray-50 p-3 rounded-md">
+        <h3 className="text-xl font-semibold text-gray-700 mb-2">Players</h3>
+        <ul className="space-y-1 p-3 rounded-md">
           {getRecordEntries(game.players)
             .sort(([idA, { name: a }], [idB, { name: b }]) =>
               idA === playerId ? -1 : idB === playerId ? 1 : a.localeCompare(b)
@@ -161,7 +161,7 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
             .map(([id, { name }]) => (
               <li key={id} className="text-gray-800">
                 {id === playerId ? (
-                  <EditableName gameId={game._id} playerId={playerId} />
+                  <EditableName game={game} playerId={playerId} />
                 ) : (
                   name
                 )}
@@ -169,94 +169,95 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
             ))}
         </ul>
       </div>
-
-      <div className="space-y-6 mb-8">
-        <div>
+      <div className="flex flex-col gap-2">
+        <h3 className="text-xl font-semibold text-gray-700 mb-2">Settings</h3>
+        <div className="w-full grid grid-cols-3 gap-2 items-center">
           <label
             htmlFor="rounds"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-gray-700 mb-1 text-right col-span-1"
           >
-            Rounds (1-1000)
+            # Questions
           </label>
           <input
             id="rounds"
             type="number"
-            value={rounds}
+            value={roundsF}
             onChange={(e) => {
-              setRounds(parseInt(e.target.value));
-              updateServerRounds(parseInt(e.target.value))?.catch((error) =>
-                toast.error((error as Error).message)
-              );
+              setRoundsF(e.target.value);
+              debouncedUpdateSettingsMutation({
+                roundsF: e.target.value,
+              });
             }}
-            min="1"
-            max="1000"
-            disabled={!canEditSettings}
-            className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
+            className="col-span-2 px-3 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
           />
+          {roundsError && (
+            <div className="text-red-500 text-sm">{roundsError}</div>
+          )}
         </div>
 
-        <div>
+        <div className="w-full grid grid-cols-3 gap-2 items-center">
           <label
             htmlFor="seconds"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-gray-700 mb-1 text-right col-span-1"
           >
-            Seconds Per Question (5-60)
+            Seconds Per Question
           </label>
           <input
             id="seconds"
             type="number"
-            value={secondsPerQuestion}
+            value={secondsPerQuestionF}
             onChange={(e) => {
-              setSecondsPerQuestion(parseInt(e.target.value));
-              updateServerSecondsPerQuestion(parseInt(e.target.value))?.catch(
-                (error) => toast.error((error as Error).message)
-              );
+              setSecondsPerQuestionF(e.target.value);
+              debouncedUpdateSettingsMutation({
+                secondsPerQuestionF: e.target.value,
+              });
             }}
-            min="5"
-            max="60"
-            disabled={!canEditSettings}
-            className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
+            className="col-span-2 px-3 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
           />
+          {secondsPerQuestionError && (
+            <div className="text-red-500 text-sm">
+              {secondsPerQuestionError}
+            </div>
+          )}
         </div>
       </div>
 
-      {canStartGame && (
-        <div className="mt-8 text-center">
-          <button
-            onClick={() => {
-              handleStartGame().catch((error) =>
-                toast.error((error as Error).message)
-              );
-            }}
-            className="w-full px-4 py-3 rounded bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors shadow-sm hover:shadow"
-          >
-            Start Game
-          </button>
-        </div>
-      )}
+      <div className="mt-8 text-center">
+        <button
+          disabled={!canStartGame}
+          onClick={() => {
+            handleStartGame().catch((error) =>
+              toast.error((error as Error).message)
+            );
+          }}
+          className="w-full px-4 py-3 rounded bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors shadow-sm hover:shadow disabled:opacity-50"
+        >
+          {isUpdatingSettings ? "Updating..." : "Start Game"}
+        </button>
+      </div>
     </div>
   );
 }
 
 function EditableName({
-  gameId,
+  game,
   playerId,
 }: {
-  gameId: Id<"games">;
+  game: LobbyGame;
   playerId: PlayerId;
 }) {
-  const [name, setName] = useState("");
+  const [name, setName] = useState(game.players[playerId]?.name ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const updateNameMutation = useMutation(api.games.updateGameSettings);
   const debouncedUpdateName = useMemo(
     () =>
       _.debounce((name: string) => {
         setIsSubmitting(true);
-        updateNameMutation({ gameId, playerName: { playerId, name } })
+        updateNameMutation({ gameId: game._id, playerName: { playerId, name } })
           .catch((error) => toast.error((error as Error).message))
           .finally(() => setIsSubmitting(false));
       }, 500),
-    [gameId, playerId, updateNameMutation]
+    [game._id, playerId, updateNameMutation]
   );
   return (
     <div className="inline-flex flex-row w-[20em] items-center gap-2">
