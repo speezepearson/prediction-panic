@@ -16,7 +16,7 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm h-16 flex justify-between items-center border-b shadow-sm px-4">
-        <h2 className="text-xl font-semibold text-primary">Prediction Panic</h2>
+        <h2 className="text-xl font-semibold text-primary">Probable Panic</h2>
       </header>
       <main className="flex-1 flex items-center justify-center p-8">
         <div className="w-full mx-auto">
@@ -63,9 +63,7 @@ function Content() {
   return (
     <div className="flex flex-col gap-8 max-w-md mx-auto">
       <div className="text-center">
-        <h1 className="text-4xl font-bold text-primary mb-4">
-          Prediction Panic
-        </h1>
+        <h1 className="text-4xl font-bold text-primary mb-4">Probable Panic</h1>
         <p className="text-lg text-secondary">Welcome, friend!</p>
       </div>
 
