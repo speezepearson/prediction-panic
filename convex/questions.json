@@ -1,0 +1,10 @@
+[
+  { "text": "The probability that a randomly selected person is left-handed is greater than 15%.", "answer": false },
+  { "text": "If you flip a fair coin 3 times, the probability of getting exactly 2 heads is 3/8.", "answer": true },
+  { "text": "More than 50% of the world's population lives in Asia.", "answer": true },
+  { "text": "The probability of rolling a sum of 7 with two standard six-sided dice is 1/6.", "answer": true },
+  { "text": "Antarctica is the largest desert in the world.", "answer": true },
+  { "text": "The human body has more than 250 bones.", "answer": false },
+  { "text": "Venus is the hottest planet in our solar system.", "answer": true },
+  { "text": "The Great Wall of China is visible from the Moon with the naked eye.", "answer": false }
+]
