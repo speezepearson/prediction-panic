@@ -1,18 +1,16 @@
 import { useMutation, useQuery } from "convex/react";
+import { useEffect, useMemo, useState } from "react";
+import { toast, Toaster } from "sonner";
 import { api } from "../convex/_generated/api";
-import { Toaster, toast } from "sonner";
-import { useState, useMemo, createContext, useContext, useEffect } from "react";
-import { GameLobby, RunningGame } from "./GameLobby";
 import { Id } from "../convex/_generated/dataModel";
 import {
   gameQuickIdSchema,
   LobbyGame,
-  PlayerId,
-  playerIdSchema,
   StartedGame,
 } from "../convex/validation";
-import { usePlayerId } from "./player-info";
 import { CreateGameButton } from "./CreateGameButton";
+import { GameLobby, RunningGame } from "./GameLobby";
+import { usePlayerId } from "./player-info";
 
 export default function App() {
   return (

@@ -1,8 +1,10 @@
+import { useMutation, useQuery } from "convex/react";
 import _ from "lodash";
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { useQuery, useMutation } from "convex/react";
-import { api } from "../convex/_generated/api";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import z from "zod/v4";
+import { api } from "../convex/_generated/api";
+import { Doc, Id } from "../convex/_generated/dataModel";
 import {
   gameNumRoundsSchema,
   gameSecondsPerQuestionSchema,
@@ -11,14 +13,12 @@ import {
   scoreGuess,
   StartedGame,
 } from "../convex/validation";
-import z from "zod/v4";
-import { Doc, Id } from "../convex/_generated/dataModel";
+import { CalibrationData, CalibrationPlot } from "./CalibrationPlot";
 import {
   formatPlusMinus,
   formatProbabilityAsPercentage,
   getRecordEntries,
 } from "./lib/utils";
-import { CalibrationData, CalibrationPlot } from "./CalibrationPlot";
 import { usePlayerId } from "./player-info";
 
 interface GameLobbyProps {
