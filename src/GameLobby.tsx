@@ -19,6 +19,7 @@ import {
   getRecordEntries,
 } from "./lib/utils";
 import { CalibrationData, CalibrationPlot } from "./CalibrationPlot";
+import { usePlayerId } from "./player-info";
 
 interface GameLobbyProps {
   game: LobbyGame;
@@ -377,9 +378,6 @@ function GameOver({
           </tbody>
         </table>
       </div>
-      <p className="text-lg text-gray-800">
-        Game ended! Your calibration curve:
-      </p>
       <ScorePlot game={game} playerId={playerId} />
       <button
         disabled={isWorking}
@@ -430,7 +428,7 @@ function ActiveRound({
 
   const nudgeGuess = useCallback(
     (dir: "up" | "down", strength: "weak" | "strong") => {
-      const oddsFactor = strength === "weak" ? Math.pow(2, 1 / 5) : 2;
+      const oddsFactor = strength === "weak" ? Math.pow(2, 1 / 3) : 2;
       const odds = playerGuess / (1 - playerGuess);
       const newOdds = odds * (dir === "up" ? oddsFactor : 1 / oddsFactor);
       setPlayerGuess(newOdds / (1 + newOdds));
@@ -526,14 +524,19 @@ function ScorePlot({
   game: Doc<"games">;
   playerId: PlayerId;
 }) {
+  const ourPlayerId = usePlayerId();
   const data: CalibrationData[] = useMemo(() => {
     return game.finishedRounds
       .map((r) => ({ prob: r.guesses[playerId], actual: r.question.answer }))
       .filter((r) => r.prob !== undefined);
   }, [game, playerId]);
+  const whose =
+    ourPlayerId === playerId
+      ? "Your"
+      : `${game.players[playerId]?.name ?? "???"}'s`;
   return (
     <div>
-      <CalibrationPlot data={data} />
+      <CalibrationPlot title={`${whose} Calibration Curve`} data={data} />
     </div>
   );
 }

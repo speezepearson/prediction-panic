@@ -3,7 +3,13 @@ import * as d3 from "d3";
 
 export type CalibrationData = { prob: number; actual: boolean };
 
-export const CalibrationPlot = ({ data }: { data: CalibrationData[] }) => {
+export const CalibrationPlot = ({
+  data,
+  title,
+}: {
+  data: CalibrationData[];
+  title: string;
+}) => {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
@@ -154,8 +160,8 @@ export const CalibrationPlot = ({ data }: { data: CalibrationData[] }) => {
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .style("font-weight", "bold")
-      .text("Probability Calibration Plot");
-  }, [data]);
+      .text(title);
+  }, [data, title]);
 
   return (
     <div className="p-4">
