@@ -9,7 +9,7 @@ import {
   StartedGame,
 } from "../convex/validation";
 import { CreateGameButton } from "./CreateGameButton";
-import { GameLobby, RunningGame } from "./GameLobby";
+import { GameLobby, RunningGame } from "./Game";
 import { usePlayerId } from "./player-info";
 
 export default function App() {
