@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Toaster, toast } from "sonner";
-import { useState, useMemo, createContext, useContext } from "react";
+import { useState, useMemo, createContext, useContext, useEffect } from "react";
 import { GameLobby, RunningGame } from "./GameLobby";
 import { Id } from "../convex/_generated/dataModel";
 import {
@@ -11,36 +11,8 @@ import {
   playerIdSchema,
   StartedGame,
 } from "../convex/validation";
-
-const loadPlayerInfo = () => {
-  const stored = localStorage.getItem("playerInfo");
-  if (stored) {
-    try {
-      const { id, name } = JSON.parse(stored);
-      return {
-        id: playerIdSchema.parse(id),
-        name: name || "Anonymous",
-      };
-    } catch (e) {
-      // If stored data is invalid, generate new player info
-      return generateNewPlayerInfo();
-    }
-  }
-  return generateNewPlayerInfo();
-};
-
-const generateNewPlayerInfo = () => {
-  const newInfo = {
-    id: playerIdSchema.parse(Math.random().toString(36).substring(2, 12)),
-    name: "Anonymous",
-  };
-  localStorage.setItem("playerInfo", JSON.stringify(newInfo));
-  return newInfo;
-};
-
-const playerContext = createContext<{ id: PlayerId; name: string }>(
-  loadPlayerInfo()
-);
+import { usePlayerId } from "./player-info";
+import { CreateGameButton } from "./CreateGameButton";
 
 export default function App() {
   return (
@@ -59,7 +31,10 @@ export default function App() {
 }
 
 function Content() {
-  const player = useContext(playerContext);
+  const playerId = usePlayerId();
+  useEffect(() => {
+    console.log("playerId", playerId);
+  }, [playerId]);
 
   const [currentGameId, setCurrentGameId] = useState<Id<"games"> | null>(null);
   const currentGame: StartedGame | LobbyGame | null | undefined = useQuery(
@@ -67,33 +42,19 @@ function Content() {
     currentGameId ? { gameId: currentGameId } : "skip"
   );
 
-  const createGame = useMutation(api.games.createGame);
-
-  const handleCreateGame = async () => {
-    try {
-      const { _id: gameId } = await createGame({
-        playerId: player.id,
-        playerName: player.name,
-      });
-      setCurrentGameId(gameId);
-    } catch (error) {
-      toast.error((error as Error).message);
-    }
-  };
-
   if (currentGame) {
     if (currentGame.started) {
       return (
         <RunningGame
           game={currentGame}
-          playerId={player.id}
+          playerId={playerId}
           onLeave={() => setCurrentGameId(null)}
         />
       );
     } else {
       return (
         <GameLobby
-          playerId={player.id}
+          playerId={playerId}
           game={currentGame}
           onLeave={() => setCurrentGameId(null)}
         />
@@ -110,14 +71,9 @@ function Content() {
 
       <div className="space-y-6">
         <div>
-          <button
-            onClick={() => {
-              handleCreateGame().catch(console.error);
-            }}
-            className="w-full px-4 py-3 rounded bg-primary text-white font-semibold hover:bg-primary-hover transition-colors shadow-sm hover:shadow"
-          >
+          <CreateGameButton onCreate={(id) => setCurrentGameId(id)}>
             Create New Game
-          </button>
+          </CreateGameButton>
         </div>
         <JoinGameForm setCurrentGameId={setCurrentGameId} />
       </div>
@@ -130,7 +86,7 @@ function JoinGameForm({
 }: {
   setCurrentGameId: (gameId: Id<"games">) => void;
 }) {
-  const player = useContext(playerContext);
+  const playerId = usePlayerId();
   const [quickIdField, setQuickIdField] = useState("");
   const { data: quickId, error: parseError } = useMemo(
     () => gameQuickIdSchema.safeParse(quickIdField),
@@ -147,8 +103,7 @@ function JoinGameForm({
 
     joinGameMutation({
       quickId,
-      playerId: player.id,
-      playerName: player.name,
+      playerId,
     })
       .then((gameId) => {
         setCurrentGameId(gameId);

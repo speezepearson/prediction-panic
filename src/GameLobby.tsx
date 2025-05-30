@@ -11,7 +11,7 @@ import {
   StartedGame,
 } from "../convex/validation";
 import z from "zod/v4";
-import { Doc } from "../convex/_generated/dataModel";
+import { Doc, Id } from "../convex/_generated/dataModel";
 import { getRecordEntries } from "./lib/utils";
 import { CalibrationData, CalibrationPlot } from "./CalibrationPlot";
 
@@ -152,11 +152,16 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
         <h3 className="text-xl font-semibold text-gray-700 mb-2">Players:</h3>
         <ul className="space-y-1 list-disc list-inside bg-gray-50 p-3 rounded-md">
           {getRecordEntries(game.players)
-            .sort(([, { name: a }], [, { name: b }]) => a.localeCompare(b))
+            .sort(([idA, { name: a }], [idB, { name: b }]) =>
+              idA === playerId ? -1 : idB === playerId ? 1 : a.localeCompare(b)
+            )
             .map(([id, { name }]) => (
               <li key={id} className="text-gray-800">
-                {name ?? "Anonymous Player"}
-                {id === playerId && " (You)"}
+                {id === playerId ? (
+                  <EditableName gameId={game._id} playerId={playerId} />
+                ) : (
+                  name
+                )}
               </li>
             ))}
         </ul>
@@ -230,6 +235,46 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
   );
 }
 
+function EditableName({
+  gameId,
+  playerId,
+}: {
+  gameId: Id<"games">;
+  playerId: PlayerId;
+}) {
+  const [name, setName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const updateNameMutation = useMutation(api.games.updateGameSettings);
+  const debouncedUpdateName = useMemo(
+    () =>
+      _.debounce((name: string) => {
+        setIsSubmitting(true);
+        updateNameMutation({ gameId, playerName: { playerId, name } })
+          .catch((error) => toast.error((error as Error).message))
+          .finally(() => setIsSubmitting(false));
+      }, 500),
+    [gameId, playerId, updateNameMutation]
+  );
+  return (
+    <div className="inline-flex flex-row w-[20em] items-center gap-2">
+      <input
+        type="text"
+        autoFocus
+        placeholder="Your name"
+        className="w-[15em] px-3 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
+        value={name}
+        onChange={(e) => {
+          setName(e.target.value);
+          debouncedUpdateName(e.target.value);
+        }}
+      />
+      {isSubmitting && (
+        <div className=" animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      )}
+    </div>
+  );
+}
+
 export function RunningGame({
   game,
   playerId,
@@ -241,6 +286,7 @@ export function RunningGame({
   playerId: PlayerId;
   onLeave: () => void;
 }) {
+  useEffect(() => console.log({ game }), [game]);
   return (
     <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-6 pb-4 border-b">
@@ -275,7 +321,7 @@ function CurrentRound({
         <div className="flex justify-center items-center h-full">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
-      ) : game.roundsRemaining === 0 ? (
+      ) : currentRound === null && game.roundsRemaining === 0 ? (
         <div className="flex flex-col justify-center items-center h-full w-full">
           <p className="text-lg text-gray-800">Game over!</p>
           <ScorePlot game={game} playerId={playerId} />
@@ -284,7 +330,7 @@ function CurrentRound({
         <div className="h-80">
           {currentRound === null ? (
             <div className="flex justify-center items-center h-full">
-              Prepare!
+              {/* Prepare! */}
             </div>
           ) : (
             <ActiveRound

@@ -18,9 +18,8 @@ import z from "zod/v4";
 export const createGame = mutation({
   args: {
     playerId: v.string() as Validator<PlayerId>,
-    playerName: v.string(),
   },
-  handler: async (ctx, { playerId, playerName }) => {
+  handler: async (ctx, { playerId }) => {
     let quickId: GameQuickId;
     let quickIdTaken: boolean;
     do {
@@ -41,7 +40,7 @@ export const createGame = mutation({
       started: false,
       roundsRemaining: 100,
       secondsPerQuestion: 10,
-      players: { [playerId]: { name: playerName } },
+      players: { [playerId]: { name: "" } },
       finishedRounds: [],
     });
     return { _id: gameId, quickId };
@@ -52,7 +51,6 @@ export const joinGame = mutation({
   args: {
     quickId: v.string(),
     playerId: v.string() as Validator<PlayerId>,
-    playerName: v.string(),
   },
   handler: async (ctx, args) => {
     const quickId = gameQuickIdSchema.parse(args.quickId.toUpperCase());
@@ -65,7 +63,7 @@ export const joinGame = mutation({
       await ctx.db.patch(game._id, {
         players: {
           ...game.players,
-          [args.playerId]: { name: args.playerName },
+          [args.playerId]: { name: "" },
         },
       });
     }
@@ -91,6 +89,12 @@ export const updateGameSettings = mutation({
     gameId: v.id("games"),
     roundsRemaining: v.optional(v.number()),
     secondsPerQuestion: v.optional(v.number()),
+    playerName: v.optional(
+      v.object({
+        playerId: v.string() as Validator<PlayerId>,
+        name: v.string(),
+      })
+    ),
   },
   handler: async (ctx, args) => {
     const game = await ctx.db.get(args.gameId);
@@ -119,6 +123,12 @@ export const updateGameSettings = mutation({
           code: 400,
         });
       updates.secondsPerQuestion = secondsPerQuestion.data;
+    }
+    if (args.playerName) {
+      updates.players = {
+        ...game.players,
+        [args.playerName.playerId]: { name: args.playerName.name },
+      };
     }
     if (Object.keys(updates).length > 0)
       await ctx.db.patch(args.gameId, updates);
@@ -198,62 +208,6 @@ export const startGame = mutation({
     // However, for immediate UI feedback, we could patch here, but it's safer to do it atomically with round creation.
     // For now, we'll patch it to true in _setupRoundWithQuestion.
     return true;
-  },
-});
-
-export const finalizeAndSetupNextRound = internalMutation({
-  args: { gameId: v.id("games") },
-  handler: async (ctx, args) => {
-    const game = await ctx.db.get(args.gameId);
-    if (!game || !game.started) {
-      console.warn(
-        "Game not found or not started in finalize. Skipping.",
-        args.gameId
-      );
-      return;
-    }
-
-    const currentRound = await ctx.db
-      .query("currentRounds")
-      .withIndex("by_gameId", (q) => q.eq("gameId", args.gameId))
-      .unique();
-
-    if (!currentRound) {
-      console.warn(
-        "Current round not found for game in finalize. Skipping.",
-        args.gameId
-      );
-      return;
-    }
-
-    const updatedFinishedRounds = [
-      ...game.finishedRounds,
-      {
-        question: currentRound.question,
-        guesses: currentRound.guesses,
-      },
-    ];
-
-    await ctx.db.delete(currentRound._id);
-
-    const newRoundsRemaining = game.roundsRemaining - 1;
-
-    await ctx.db.patch(args.gameId, {
-      finishedRounds: updatedFinishedRounds,
-      roundsRemaining: newRoundsRemaining,
-    });
-
-    if (newRoundsRemaining > 0) {
-      // Schedule the action to fetch the next question and set up the round
-      await ctx.scheduler.runAfter(0, internal.games.tickGame, {
-        gameId: args.gameId,
-      });
-    } else {
-      console.log(`Game ${args.gameId} has ended. No rounds remaining.`);
-      // Optionally mark game as fully completed.
-      // await ctx.db.patch(args.gameId, { status: "finished", started: false });
-      await ctx.db.patch(args.gameId, { started: false }); // Mark as no longer "running"
-    }
   },
 });
 
