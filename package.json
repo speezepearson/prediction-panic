@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
+    "deploy": "npx convex deploy --cmd 'npm run build' && for ext in js css; do cp dist/assets/index-*.$ext ${DEPLOY_DIR?}/main.$ext; done",
     "dev": "npm-run-all --parallel dev:frontend dev:backend",
     "dev:frontend": "vite --open",
     "dev:backend": "convex dev",
