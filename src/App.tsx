@@ -11,12 +11,36 @@ import {
   playerIdSchema,
   StartedGame,
 } from "../convex/validation";
-import { CalibrationPlot } from "./CalibrationPlot";
 
-const playerContext = createContext<{ id: PlayerId; name: string }>({
-  id: playerIdSchema.parse(Math.random().toString(36).substring(2, 12)),
-  name: "Anonymous",
-});
+const loadPlayerInfo = () => {
+  const stored = localStorage.getItem("playerInfo");
+  if (stored) {
+    try {
+      const { id, name } = JSON.parse(stored);
+      return {
+        id: playerIdSchema.parse(id),
+        name: name || "Anonymous",
+      };
+    } catch (e) {
+      // If stored data is invalid, generate new player info
+      return generateNewPlayerInfo();
+    }
+  }
+  return generateNewPlayerInfo();
+};
+
+const generateNewPlayerInfo = () => {
+  const newInfo = {
+    id: playerIdSchema.parse(Math.random().toString(36).substring(2, 12)),
+    name: "Anonymous",
+  };
+  localStorage.setItem("playerInfo", JSON.stringify(newInfo));
+  return newInfo;
+};
+
+const playerContext = createContext<{ id: PlayerId; name: string }>(
+  loadPlayerInfo()
+);
 
 export default function App() {
   return (
@@ -35,8 +59,8 @@ export default function App() {
 }
 
 function Content() {
-  const { id: playerId } = useContext(playerContext);
-  const [playerName, setPlayerName] = useState("Anonymous");
+  const player = useContext(playerContext);
+
   const [currentGameId, setCurrentGameId] = useState<Id<"games"> | null>(null);
   const currentGame: StartedGame | LobbyGame | null | undefined = useQuery(
     api.games.getGame,
@@ -48,8 +72,8 @@ function Content() {
   const handleCreateGame = async () => {
     try {
       const { _id: gameId } = await createGame({
-        playerId,
-        playerName,
+        playerId: player.id,
+        playerName: player.name,
       });
       setCurrentGameId(gameId);
     } catch (error) {
@@ -62,14 +86,14 @@ function Content() {
       return (
         <RunningGame
           game={currentGame}
-          playerId={playerId}
+          playerId={player.id}
           onLeave={() => setCurrentGameId(null)}
         />
       );
     } else {
       return (
         <GameLobby
-          playerId={playerId}
+          playerId={player.id}
           game={currentGame}
           onLeave={() => setCurrentGameId(null)}
         />
