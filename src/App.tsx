@@ -11,6 +11,7 @@ import {
 import { CreateGameButton } from "./CreateGameButton";
 import { GameLobby, RunningGame } from "./Game";
 import { usePlayerId } from "./player-info";
+import { errString } from "./lib/utils";
 
 export default function App() {
   return (
@@ -108,7 +109,7 @@ function JoinGameForm({
         toast.success("Joined game!");
       })
       .catch((error) => {
-        setJoinError((error as Error).message);
+        setJoinError(errString(error));
       })
       .finally(() => {
         setIsJoining(false);

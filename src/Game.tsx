@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import z from "zod/v4";
 import { api } from "../convex/_generated/api";
-import { Doc, Id } from "../convex/_generated/dataModel";
+import { Doc } from "../convex/_generated/dataModel";
 import {
   gameNumRoundsSchema,
   gameSecondsPerQuestionSchema,
@@ -15,6 +15,7 @@ import {
 } from "../convex/validation";
 import { CalibrationData, CalibrationPlot } from "./CalibrationPlot";
 import {
+  errString,
   formatPlusMinus,
   formatProbabilityAsPercentage,
   getRecordEntries,
@@ -87,7 +88,7 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
             .then(() => {
               toast.success("Settings updated!");
             })
-            .catch((error) => toast.error((error as Error).message))
+            .catch((error) => toast.error(errString(error)))
             .finally(() => {
               setIsUpdatingSettings(false);
             });
@@ -123,13 +124,10 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
   }
 
   const canStartGame = !game.started && !isUpdatingSettings;
-  const handleStartGame = async () => {
-    try {
-      await startGameMutation({ gameId: game._id });
-      toast.success("Game started!");
-    } catch (error) {
-      toast.error((error as Error).message);
-    }
+  const handleStartGame = () => {
+    startGameMutation({ gameId: game._id })
+      .then(() => toast.success("Game started!"))
+      .catch((error) => toast.error(errString(error)));
   };
 
   return (
@@ -226,9 +224,7 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
         <button
           disabled={!canStartGame}
           onClick={() => {
-            handleStartGame().catch((error) =>
-              toast.error((error as Error).message)
-            );
+            handleStartGame();
           }}
           className="w-full px-4 py-3 rounded bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors shadow-sm hover:shadow disabled:opacity-50"
         >
@@ -254,7 +250,7 @@ function EditableName({
       _.debounce((name: string) => {
         setIsSubmitting(true);
         updateNameMutation({ gameId: game._id, playerName: { playerId, name } })
-          .catch((error) => toast.error((error as Error).message))
+          .catch((error) => toast.error(errString(error)))
           .finally(() => setIsSubmitting(false));
       }, 500),
     [game._id, playerId, updateNameMutation]
@@ -382,7 +378,7 @@ function GameOver({
         onClick={() => {
           setIsWorking(true);
           resetGameMutation({ gameId: game._id })
-            .catch((error) => toast.error((error as Error).message))
+            .catch((error) => toast.error(errString(error)))
             .finally(() => setIsWorking(false));
         }}
         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -409,7 +405,7 @@ function ActiveRound({
       _.throttle((...args: Parameters<typeof setPlayerGuessMutation>) => {
         setIsSubmitting(true);
         setPlayerGuessMutation(...args)
-          .catch((error) => toast.error((error as Error).message))
+          .catch((error) => toast.error(errString(error)))
           .finally(() => setIsSubmitting(false));
       }, 200),
     [setPlayerGuessMutation]

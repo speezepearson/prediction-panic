@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
 import { usePlayerId } from "./player-info";
+import { errString } from "./lib/utils";
 
 export function CreateGameButton({
   children,
@@ -26,7 +27,7 @@ export function CreateGameButton({
       });
       onCreate(gameId);
     } catch (error) {
-      toast.error((error as Error).message);
+      toast.error(errString(error));
     }
   };
 

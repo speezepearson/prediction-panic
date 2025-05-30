@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import { ConvexError } from "convex/values";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -29,4 +30,11 @@ export function formatProbabilityAsPercentage(prob: number): string {
 
 export function formatPlusMinus(n: number): string {
   return n > 0 ? `+${n}` : n.toFixed(0);
+}
+
+export function errString(error: unknown): string {
+  if (error instanceof ConvexError) {
+    return String(error.data);
+  }
+  return error instanceof Error ? error.message : String(error);
 }

@@ -61,7 +61,7 @@ export const joinGame = mutation({
       .query("games")
       .withIndex("by_quickId", (q) => q.eq("quickId", quickId))
       .unique();
-    if (!game) throw new Error("Game not found.");
+    if (!game) throw new ConvexError("Game not found.");
     if (!game.players[args.playerId]) {
       await ctx.db.patch(game._id, {
         players: {
@@ -78,7 +78,7 @@ export const leaveGame = mutation({
   args: { gameId: v.id("games"), playerId: v.string() as Validator<PlayerId> },
   handler: async (ctx, args) => {
     const game = await ctx.db.get(args.gameId);
-    if (!game) throw new Error("Game not found.");
+    if (!game) throw new ConvexError("Game not found.");
     delete game.players[args.playerId];
     await ctx.db.patch(game._id, {
       players: game.players,
@@ -101,8 +101,9 @@ export const updateGameSettings = mutation({
   },
   handler: async (ctx, args) => {
     const game = await ctx.db.get(args.gameId);
-    if (!game) throw new Error("Game not found.");
-    if (game.started) throw new Error("Game started, cannot update settings.");
+    if (!game) throw new ConvexError("Game not found.");
+    if (game.started)
+      throw new ConvexError("Game started, cannot update settings.");
 
     const updates: Partial<Doc<"games">> = {};
     if (args.roundsRemaining !== undefined) {
@@ -150,7 +151,7 @@ export const tickGame = internalMutation({
       return;
     }
     if (!game.started) {
-      throw new Error("Game not started.");
+      throw new ConvexError("Game not started.");
     }
 
     const currentRound = await ctx.db
@@ -205,10 +206,11 @@ export const startGame = mutation({
   args: { gameId: v.id("games") },
   handler: async (ctx, args) => {
     const game = await ctx.db.get(args.gameId);
-    if (!game) throw new Error("Game not found.");
+    if (!game) throw new ConvexError("Game not found.");
 
-    if (game.started) throw new Error("Game already started.");
-    if (game.roundsRemaining <= 0) throw new Error("No rounds remaining.");
+    if (game.started) throw new ConvexError("Game already started.");
+    if (game.roundsRemaining <= 0)
+      throw new ConvexError("No rounds remaining.");
 
     await ctx.db.patch(args.gameId, { started: true });
 
@@ -254,7 +256,7 @@ export const setPlayerGuess = mutation({
       .unique();
 
     if (!currentRound) {
-      throw new Error("No active round found");
+      throw new ConvexError("No active round found");
     }
 
     // Update the guesses map with the new guess
