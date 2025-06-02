@@ -1,5 +1,37 @@
 [
   {
+    "text": "Eliezer Yudkowsky wrote the Sequences.",
+    "answer": true
+  },
+  {
+    "text": "You can do Manifold sweepstakes if you live in Delaware.",
+    "answer": false
+  },
+  {
+    "text": "In the Smoking Lesion problem, evidential decision theory says to smoke.",
+    "answer": false
+  },
+  {
+    "text": "In the Smoking Lesion problem, functional decision theory says to smoke.",
+    "answer": true
+  },
+  {
+    "text": "Manifest 2024 had >600 attendees.",
+    "answer": false
+  },
+  {
+    "text": "GiveWell lists cash transfers as more effective than malaria nets.",
+    "answer": false
+  },
+  {
+    "text": "Minnows beat whales.",
+    "answer": true
+  },
+  {
+    "text": "E.T. Jaynes has a trick for skipping over 'limit of a finite set' stuff and considering infinite sets of propositions directly.",
+    "answer": false
+  },
+  {
     "text": "The Great Wall of China is visible from the moon.",
     "answer": false
   },
