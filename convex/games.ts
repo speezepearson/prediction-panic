@@ -15,6 +15,8 @@ import {
 } from "./validation";
 import z from "zod/v4";
 
+const DEFAULT_N_ROUNDS = 100;
+const DEFAULT_SECONDS_PER_QUESTION = 6;
 const INTER_ROUND_DELAY = 300;
 
 export const createGame = mutation({
@@ -40,8 +42,8 @@ export const createGame = mutation({
     const gameId = await ctx.db.insert("games", {
       quickId,
       started: false,
-      roundsRemaining: Math.min(100, fullQuestions.size),
-      secondsPerQuestion: 10,
+      roundsRemaining: Math.min(DEFAULT_N_ROUNDS, fullQuestions.size),
+      secondsPerQuestion: DEFAULT_SECONDS_PER_QUESTION,
       players: { [playerId]: { name: "" } },
       finishedRounds: [],
     });
