@@ -33,68 +33,51 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
   const startGameMutation = useMutation(api.games.startGame);
 
   const [roundsF, setRoundsF] = useState(game.roundsRemaining.toString());
-  const [roundsError, setRoundsError] = useState<string | null>(null);
-  useEffect(() => {
-    const { error } = gameNumRoundsSchema.safeParse(parseInt(roundsF));
-    setRoundsError(error ? z.prettifyError(error) : null);
-  }, [roundsF]);
+  const rounds = useMemo(
+    () => z.coerce.number().pipe(gameNumRoundsSchema).safeParse(roundsF),
+    [roundsF]
+  );
 
   const [secondsPerQuestionF, setSecondsPerQuestionF] = useState(
     game.secondsPerQuestion.toString()
   );
-  const [secondsPerQuestionError, setSecondsPerQuestionError] = useState<
-    string | null
-  >(null);
-  useEffect(() => {
-    const { error } = gameSecondsPerQuestionSchema.safeParse(
-      parseInt(secondsPerQuestionF)
-    );
-    setSecondsPerQuestionError(error ? z.prettifyError(error) : null);
-  }, [secondsPerQuestionF]);
+  const secondsPerQuestion = useMemo(
+    () =>
+      z.coerce
+        .number()
+        .pipe(gameSecondsPerQuestionSchema)
+        .safeParse(secondsPerQuestionF),
+    [secondsPerQuestionF]
+  );
 
   const [isUpdatingSettings, setIsUpdatingSettings] = useState(false);
-  const debouncedUpdateSettingsMutation = useMemo(
-    () =>
-      _.debounce(
-        ({
-          roundsF,
-          secondsPerQuestionF,
-        }: {
-          roundsF?: string;
-          secondsPerQuestionF?: string;
-        }) => {
-          const rounds =
-            roundsF === undefined
-              ? undefined
-              : gameNumRoundsSchema.safeParse(parseInt(roundsF)).data;
-          const secondsPerQuestion =
-            secondsPerQuestionF === undefined
-              ? undefined
-              : gameSecondsPerQuestionSchema.safeParse(
-                  parseInt(secondsPerQuestionF)
-                ).data;
-          if (
-            (rounds === undefined || rounds === game.roundsRemaining) &&
-            (secondsPerQuestion === undefined ||
-              secondsPerQuestion === game.secondsPerQuestion)
-          )
-            return;
-          setIsUpdatingSettings(true);
-          updateSettingsMutation({
-            gameId: game._id,
-            roundsRemaining: rounds,
-            secondsPerQuestion: secondsPerQuestion,
-          })
-            .then(() => {
-              toast.success("Settings updated!");
-            })
-            .catch((error) => toast.error(errString(error)))
-            .finally(() => {
-              setIsUpdatingSettings(false);
-            });
-        },
-        300
-      ),
+  const handleUpdateSettings = useCallback(
+    ({
+      rounds,
+      secondsPerQuestion,
+    }: {
+      rounds: number;
+      secondsPerQuestion: number;
+    }) => {
+      if (
+        rounds === game.roundsRemaining &&
+        secondsPerQuestion === game.secondsPerQuestion
+      )
+        return;
+      setIsUpdatingSettings(true);
+      updateSettingsMutation({
+        gameId: game._id,
+        roundsRemaining: rounds,
+        secondsPerQuestion: secondsPerQuestion,
+      })
+        .then(() => {
+          toast.success("Settings updated!");
+        })
+        .catch((error) => toast.error(errString(error)))
+        .finally(() => {
+          setIsUpdatingSettings(false);
+        });
+    },
     [game, updateSettingsMutation]
   );
 
@@ -105,6 +88,16 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
   useEffect(() => {
     setSecondsPerQuestionF(game.secondsPerQuestion.toString());
   }, [game.secondsPerQuestion]);
+
+  const [isStartingGame, setIsStartingGame] = useState(false);
+  const canStartGame = !game.started && !isUpdatingSettings && !isStartingGame;
+  const handleStartGame = useCallback(() => {
+    setIsStartingGame(true);
+    startGameMutation({ gameId: game._id })
+      .then(() => toast.success("Game started!"))
+      .catch((error) => toast.error(errString(error)))
+      .finally(() => setIsStartingGame(false));
+  }, [game._id, startGameMutation]);
 
   if (!game) {
     // Still loading game details
@@ -124,12 +117,15 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
     );
   }
 
-  const canStartGame = !game.started && !isUpdatingSettings;
-  const handleStartGame = () => {
-    startGameMutation({ gameId: game._id })
-      .then(() => toast.success("Game started!"))
-      .catch((error) => toast.error(errString(error)));
-  };
+  const canUpdateSettings =
+    rounds.success &&
+    secondsPerQuestion.success &&
+    !isUpdatingSettings &&
+    !isStartingGame &&
+    !(
+      rounds.data === game.roundsRemaining &&
+      secondsPerQuestion.data === game.secondsPerQuestion
+    );
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg mx-auto">
@@ -183,14 +179,13 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
             value={roundsF}
             onChange={(e) => {
               setRoundsF(e.target.value);
-              debouncedUpdateSettingsMutation({
-                roundsF: e.target.value,
-              });
             }}
             className="col-span-2 px-3 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
           />
-          {roundsError && (
-            <div className="text-red-500 text-sm">{roundsError}</div>
+          {rounds.error && (
+            <div className="text-red-500 text-sm">
+              {z.prettifyError(rounds.error)}
+            </div>
           )}
         </div>
 
@@ -207,18 +202,28 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
             value={secondsPerQuestionF}
             onChange={(e) => {
               setSecondsPerQuestionF(e.target.value);
-              debouncedUpdateSettingsMutation({
-                secondsPerQuestionF: e.target.value,
-              });
             }}
             className="col-span-2 px-3 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
           />
-          {secondsPerQuestionError && (
+          {secondsPerQuestion.error && (
             <div className="text-red-500 text-sm">
-              {secondsPerQuestionError}
+              {z.prettifyError(secondsPerQuestion.error)}
             </div>
           )}
         </div>
+        <button
+          className="ml-auto px-2 py-1 rounded bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-colors shadow-sm hover:shadow disabled:opacity-50"
+          disabled={!canUpdateSettings}
+          onClick={() => {
+            if (!canUpdateSettings) return;
+            handleUpdateSettings({
+              rounds: rounds.data,
+              secondsPerQuestion: secondsPerQuestion.data,
+            });
+          }}
+        >
+          Update
+        </button>
       </div>
 
       <div className="mt-8 text-center">
