@@ -313,7 +313,7 @@ export const resetGame = mutation({
   handler: async (ctx, args) => {
     await ctx.db.patch(args.gameId, {
       started: false,
-      roundsRemaining: 100,
+      roundsRemaining: Math.min(DEFAULT_N_ROUNDS, fullQuestions.size),
       finishedRounds: [],
     });
   },
