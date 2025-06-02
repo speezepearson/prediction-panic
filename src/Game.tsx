@@ -284,7 +284,7 @@ function EditableName({
         type="text"
         autoFocus
         placeholder="Your name"
-        className="w-full px-2 py-1 font-bold bg-blue-100 border-blue-400 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
+        className="w-full px-2 py-1 font-bold bg-blue-100 border-blue-400 rounded-md border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
         value={name}
         onChange={(e) => {
           setName(e.target.value);
