@@ -334,7 +334,9 @@ export function RunningGame({
               key={id}
               className="text-gray-800 px-2 py-0 border rounded-md bg-gray-200 flex flex-col items-center"
             >
-              <div className="font-bold">{name || "(anonymous)"}</div>
+              <div className="font-bold">
+                {id === playerId ? "You" : name || "(anonymous)"}
+              </div>
               <div>{formatPlusMinusInt(scores[id] ?? 0)}</div>
             </div>
           ))}
