@@ -3,20 +3,21 @@ import { Doc } from "./_generated/dataModel";
 import allQuestions from "./questions.json" with { type: "json" };
 import { Map } from "immutable";
 
-export const fullQuestions: Map<
+const typedRawQuestions: Record<
   string,
-  { left: string; right: string; answer: boolean }
-> = Map(
-  Object.entries(allQuestions).map(([text, { left, right, answer }]) => [
-    text,
-    { left, right, answer },
-  ])
-);
+  { left: string; right: string; answer: boolean; tags?: string[] }
+> = allQuestions;
+
+export const fullQuestions = Map(
+  Object.entries(typedRawQuestions).map(
+    ([text, { left, right, answer, tags }]) => [
+      text,
+      { left, right, answer, tags },
+    ]
+  )
+).filter(({ tags }) => tags?.includes("rat"));
 export const redactedQuestions: Map<string, { left: string; right: string }> =
-  fullQuestions.map((q) => ({
-    left: q.left,
-    right: q.right,
-  }));
+  fullQuestions.map(({ left, right, tags }) => ({ left, right, tags }));
 
 export const gameQuickIdSchema = z
   .string()
