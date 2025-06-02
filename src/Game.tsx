@@ -19,6 +19,7 @@ import {
   formatPlusMinusInt,
   formatProbabilityAsPercentage,
   getRecordEntries,
+  ifEnter,
 } from "./lib/utils";
 import { usePlayerId } from "./player-info";
 
@@ -99,6 +100,24 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
       .finally(() => setIsStartingGame(false));
   }, [game._id, startGameMutation]);
 
+  const canUpdateSettings =
+    rounds.success &&
+    secondsPerQuestion.success &&
+    !isUpdatingSettings &&
+    !isStartingGame &&
+    !(
+      rounds.data === game.roundsRemaining &&
+      secondsPerQuestion.data === game.secondsPerQuestion
+    );
+
+  const onUpdateSettingsSubmit = useCallback(() => {
+    if (!canUpdateSettings) return;
+    handleUpdateSettings({
+      rounds: rounds.data,
+      secondsPerQuestion: secondsPerQuestion.data,
+    });
+  }, [canUpdateSettings, handleUpdateSettings, rounds, secondsPerQuestion]);
+
   if (!game) {
     // Still loading game details
     return (
@@ -116,16 +135,6 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
       </p>
     );
   }
-
-  const canUpdateSettings =
-    rounds.success &&
-    secondsPerQuestion.success &&
-    !isUpdatingSettings &&
-    !isStartingGame &&
-    !(
-      rounds.data === game.roundsRemaining &&
-      secondsPerQuestion.data === game.secondsPerQuestion
-    );
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg mx-auto">
@@ -187,6 +196,7 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
             onChange={(e) => {
               setRoundsF(e.target.value);
             }}
+            onKeyDown={ifEnter(onUpdateSettingsSubmit)}
             className="col-span-2 px-3 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
           />
           {rounds.error && (
@@ -210,6 +220,7 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
             onChange={(e) => {
               setSecondsPerQuestionF(e.target.value);
             }}
+            onKeyDown={ifEnter(onUpdateSettingsSubmit)}
             className="col-span-2 px-3 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
           />
           {secondsPerQuestion.error && (
@@ -221,13 +232,7 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
         <button
           className="ml-auto px-2 py-1 rounded bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-colors shadow-sm hover:shadow disabled:opacity-50"
           disabled={!canUpdateSettings}
-          onClick={() => {
-            if (!canUpdateSettings) return;
-            handleUpdateSettings({
-              rounds: rounds.data,
-              secondsPerQuestion: secondsPerQuestion.data,
-            });
-          }}
+          onClick={onUpdateSettingsSubmit}
         >
           Update
         </button>
@@ -366,17 +371,6 @@ function GameOver({
   const [isWorking, setIsWorking] = useState(false);
   const resetGameMutation = useMutation(api.games.resetGame);
 
-  const scores: Record<PlayerId, number> = useMemo(() => {
-    const result: Record<PlayerId, number> = {};
-    for (const round of game.finishedRounds) {
-      for (const [playerId, guess] of getRecordEntries(round.guesses)) {
-        if (result[playerId] === undefined) result[playerId] = 0;
-        result[playerId] += scoreGuess(guess, round.question.answer);
-      }
-    }
-    return result;
-  }, [game]);
-
   return (
     <div className="flex flex-col justify-center items-center h-full w-full">
       <h2 className="text-2xl font-bold text-gray-800">Game Over!</h2>
@@ -464,22 +458,33 @@ function ActiveRound({
       <h3 className="text-xl font-semibold text-blue-700 mb-2">
         Current Statement:
       </h3>
-      <p className="text-lg text-gray-800">{currentRound.question.text}</p>
+      <p className="text-lg text-gray-800 text-center">
+        {currentRound.question.text}
+      </p>
 
       <div className="flex flex-col items-center w-full absolute bottom-0 p-2">
+        <div className="grid grid-cols-3 gap-2 w-full mb-4 text-xl font-bold items-center">
+          <div className="col-span-1 text-red-500 text-right flex items-center justify-end">
+            {currentRound.question.left}
+          </div>
+          <div className="col-span-1"></div>
+          <div className="col-span-1 text-green-500 text-left flex items-center">
+            {currentRound.question.right}
+          </div>
+        </div>
+
         <div className="w-full flex flex-row items-center justify-center gap-2 h-20">
           <button
             className="border rounded-md px-2 h-full w-20 bg-red-500 font-bold"
             onClick={() => nudgeGuess("down", "strong")}
           >
-            &lt;&lt;
+            --
           </button>
           <button
             className="border rounded-md px-2 h-full w-20 bg-red-300 font-bold"
             onClick={() => nudgeGuess("down", "weak")}
           >
-            {" "}
-            &lt;
+            -
           </button>
           <div className="flex-grow flex flex-col items-center justify-center">
             <div className="text-center relative">
@@ -499,13 +504,13 @@ function ActiveRound({
             className="border rounded-md px-2 h-full w-20 bg-green-300 font-bold"
             onClick={() => nudgeGuess("up", "weak")}
           >
-            &gt;
+            +
           </button>
           <button
             className="border rounded-md px-2 h-full w-20 bg-green-500 font-bold"
             onClick={() => nudgeGuess("up", "strong")}
           >
-            &gt;&gt;
+            ++
           </button>
         </div>
         <div className="flex flex-row items-center justify-center w-full gap-2">
@@ -536,7 +541,7 @@ function ScorePlot({
   const ourPlayerId = usePlayerId();
   const data: CalibrationData[] = useMemo(() => {
     return game.finishedRounds
-      .map((r) => ({ prob: r.guesses[playerId], actual: r.question.answer }))
+      .map((r) => ({ prob: r.guesses[playerId], actual: r.answer }))
       .filter((r) => r.prob !== undefined);
   }, [game, playerId]);
   const whose =
@@ -555,7 +560,7 @@ function getPlayerScores(game: Doc<"games">): Record<PlayerId, number> {
   for (const round of game.finishedRounds) {
     for (const [playerId, guess] of getRecordEntries(round.guesses)) {
       res[playerId] ??= 0;
-      res[playerId] += scoreGuess(guess, round.question.answer);
+      res[playerId] += scoreGuess(guess, round.answer);
     }
   }
   return res;

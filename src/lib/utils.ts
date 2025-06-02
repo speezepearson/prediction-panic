@@ -38,3 +38,11 @@ export function errString(error: unknown): string {
   }
   return error instanceof Error ? error.message : String(error);
 }
+
+export function ifEnter<T>(f: () => unknown): (e: { key: string }) => void {
+  return (e) => {
+    if (e.key === "Enter") {
+      return f();
+    }
+  };
+}

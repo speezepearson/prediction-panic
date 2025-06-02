@@ -1,1074 +1,1342 @@
-[
-  {
-    "text": "Eliezer Yudkowsky wrote the Sequences.",
+{
+  "____ wrote the Sequences.": {
+    "left": "Eliezer Yudkowsky",
+    "right": "Scott Alexander",
     "answer": true
   },
-  {
-    "text": "You can do Manifold sweepstakes if you live in Delaware.",
+  "In the Smoking Lesion problem, EDT says to smoke.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In the Smoking Lesion problem, evidential decision theory says to smoke.",
-    "answer": false
+  "In the Smoking Lesion problem, FDT says to smoke.": {
+    "left": "false",
+    "right": "true",
+    "answer": true
   },
-  {
-    "text": "In the Smoking Lesion problem, functional decision theory says to smoke.",
+  "In the Smoking Lesion problem, CDT says to smoke.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Manifest 2024 had >600 attendees.",
+  "Manifest 2024 had >800 attendees.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "GiveWell lists cash transfers as more effective than malaria nets.",
-    "answer": false
+  "Which does GiveWell list as more effective?": {
+    "left": "cash transfers",
+    "right": "malaria nets",
+    "answer": true
   },
-  {
-    "text": "Minnows beat whales.",
+  "Who won?": {
+    "left": "whales",
+    "right": "minnows",
     "answer": true
   },
-  {
-    "text": "E.T. Jaynes has a trick for skipping over 'limit of a finite set' stuff and considering infinite sets of propositions directly.",
+  "E.T. Jaynes has a trick for skipping over 'limit of a finite set' stuff and considering infinite sets of propositions directly.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The Great Wall of China is visible from the moon.",
+  "The Great Wall of China is visible from the moon.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Jingle Bells was originally meant for Thanksgiving",
+  "Jingle Bells was originally meant for Thanksgiving": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Nutella is produced by the German company Ferrero.",
+  "Nutella is produced by the German company Ferrero.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The bikini is named after the \"Bikini Atoll\", an island where the United States conducted tests on atomic bombs.",
+  "The bikini is named after the \"Bikini Atoll\", an island where the United States conducted tests on atomic bombs.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "French is an official language in Canada.",
+  "French is an official language in Canada.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In Scandinavian languages, the letter Å means river.",
+  "In Scandinavian languages, the letter Å means river.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "This is the correct spelling of \"Supercalifragilisticexpialidocious\".",
+  "This is the correct spelling of \"Supercalifragilisticexpialidocious\".": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The mitochondria is the powerhouse of the cell.",
+  "The mitochondria is the powerhouse of the cell.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The Lego Group was founded in 1932.",
+  "The Lego Group was founded in 1932.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "\"Typewriter\" is the longest word that can be typed using only the first row on a QWERTY keyboard.",
+  "\"Typewriter\" is the longest word that can be typed using only the first row on a QWERTY keyboard.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The term \"Spam\" came before the food product \"Spam\".",
+  "The term \"Spam\" came before the food product \"Spam\".": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Video streaming website YouTube was purchased in its entirety by Facebook for US$1.65 billion in stock.",
+  "Video streaming website YouTube was purchased in its entirety by Facebook for US$1.65 billion in stock.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Popcorn was invented in 1871 by Frederick W. Rueckheim in the USA where he sold the snack on the streets of Chicago.",
+  "Popcorn was invented in 1871 by Frederick W. Rueckheim in the USA where he sold the snack on the streets of Chicago.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Stagecoach owned \"South West Trains\" before losing the rights to FirstGroup and MTR in March of 2017.",
+  "Stagecoach owned \"South West Trains\" before losing the rights to FirstGroup and MTR in March of 2017.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "On average, at least 1 person is killed by a drunk driver in the United States every hour.",
+  "On average, at least 1 person is killed by a drunk driver in the United States every hour.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Kissing someone for one minute burns about 2 calories.",
+  "Kissing someone for one minute burns about 2 calories.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "\"Santa Claus\" is a variety of melon.",
+  "\"Santa Claus\" is a variety of melon.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "You can legally drink alcohol while driving in Mississippi.",
+  "You can legally drink alcohol while driving in Mississippi.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The scientific name for the Southern Lights is Aurora Australis?",
+  "The scientific name for the Southern Lights is Aurora Australis?": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "\"Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo.\" is a grammatically correct sentence.",
+  "\"Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo.\" is a grammatically correct sentence.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Fast food restaurant chains Carl's Jr. and Hardee's are owned by the same company.",
+  "Fast food restaurant chains Carl's Jr. and Hardee's are owned by the same company.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "\"Ananas\" is mostly used as the word for Pineapple in other languages.",
+  "\"Ananas\" is mostly used as the word for Pineapple in other languages.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The vapor produced by e-cigarettes is actually water.",
+  "The vapor produced by e-cigarettes is actually water.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Dihydrogen Monoxide was banned due to health risks after being discovered in 1983 inside swimming pools and drinking water.",
+  "Dihydrogen Monoxide was banned due to health risks after being discovered in 1983 inside swimming pools and drinking water.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "It is automatically considered entrapment in the United States if the police sell you illegal substances without revealing themselves.",
+  "It is automatically considered entrapment in the United States if the police sell you illegal substances without revealing themselves.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "\"Number 16 Bus Shelter\" was a child's name that was approved by the New Zealand government.",
+  "\"Number 16 Bus Shelter\" was a child's name that was approved by the New Zealand government.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The color orange is named after the fruit.",
+  "The color orange is named after the fruit.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "A scientific study on peanuts in bars found traces of over 100 unique specimens of urine.",
+  "A scientific study on peanuts in bars found traces of over 100 unique specimens of urine.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The word \"news\" originates from the first letters of the 4 main directions on a compass (North, East, West, South).",
+  "The word \"news\" originates from the first letters of the 4 main directions on a compass (North, East, West, South).": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Sitting for more than three hours a day can cut two years off a person's life expectancy.",
+  "Sitting for more than three hours a day can cut two years off a person's life expectancy.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "When you cry in space, your tears stick to your face.",
+  "When you cry in space, your tears stick to your face.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The British organisation CAMRA stands for The Campaign for Real Ale.",
+  "The British organisation CAMRA stands for The Campaign for Real Ale.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Cucumbers are usually more than 90% water.",
+  "Cucumbers are usually more than 90% water.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The average woman is 5 inches / 13 centimeters shorter than the average man.",
+  "The average woman is 5 inches / 13 centimeters shorter than the average man.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "There are 86400 seconds in a day.",
+  "There are 86400 seconds in a day.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Haggis is traditionally ate on Burns Night.",
+  "Haggis is traditionally ate on Burns Night.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Romanian belongs to the Romance language family, shared with French, Spanish, Portuguese and Italian. ",
+  "Romanian belongs to the Romance language family, shared with French, Spanish, Portuguese and Italian. ": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The French word for \"glass\" is \"glace\".",
+  "The French word for \"glass\" is \"glace\".": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The US emergency hotline is 911 because of the September 11th terrorist attacks.",
+  "The US emergency hotline is 911 because of the September 11th terrorist attacks.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Francis Bacon died from a fatal case of pneumonia while he was attempting to preserve meat by stuffing a chicken with snow.",
+  "Francis Bacon died from a fatal case of pneumonia while he was attempting to preserve meat by stuffing a chicken with snow.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The Sun rises from the North.",
+  "The Sun rises from the North.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In 2010, Twitter and the United States Library of Congress partnered together to archive every tweet by American citizens.",
+  "In 2010, Twitter and the United States Library of Congress partnered together to archive every tweet by American citizens.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "NCIS stands for \"Navy Corps Investigative Service\"",
+  "NCIS stands for \"Navy Corps Investigative Service\"": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "\"27 Club\" is a term used to refer to a list of famous actors, musicians, and artists who died at the age of 27.",
+  "\"27 Club\" is a term used to refer to a list of famous actors, musicians, and artists who died at the age of 27.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Bulls are attracted to the color red.",
+  "Bulls are attracted to the color red.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Instant mashed potatoes were invented by Canadian Edward Asselbergs in 1962.",
+  "Instant mashed potatoes were invented by Canadian Edward Asselbergs in 1962.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The pickled gherkin was first added to hamburgers because a US health law required all fast-food to include a source of Vitamin C.",
+  "The pickled gherkin was first added to hamburgers because a US health law required all fast-food to include a source of Vitamin C.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Adolf Hitler was born in Australia. ",
+  "Adolf Hitler was born in Australia. ": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The National Animal of Scotland is the Unicorn.",
+  "The National Animal of Scotland is the Unicorn.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The French word to travel is \"Travail\"",
+  "The French word to travel is \"Travail\"": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In Harry Potter and the Deathly Hallows, Hermione destroyed the fourth Horcrux by stabbing it with the Sword of Gryffindor.",
+  "In Harry Potter and the Deathly Hallows, Hermione destroyed the fourth Horcrux by stabbing it with the Sword of Gryffindor.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Harry Potter was born on July 31st, 1980.",
+  "Harry Potter was born on July 31st, 1980.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The \"Berenstein Bears\" is the correct spelling of the educational children's book series' name.",
+  "The \"Berenstein Bears\" is the correct spelling of the educational children's book series' name.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "\"Green Eggs and Ham\" consists of only 50 different words.",
+  "\"Green Eggs and Ham\" consists of only 50 different words.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Stephen Chbosky wrote the book 'The Perks of Being A Wallflower'.",
+  "Stephen Chbosky wrote the book 'The Perks of Being A Wallflower'.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "\"Elementary, my dear Watson\" is a phrase that is never truly said within the Conan Doyle books of Sherlock Holmes.",
+  "\"Elementary, my dear Watson\" is a phrase that is never truly said within the Conan Doyle books of Sherlock Holmes.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Shub-Niggurath is a creature that was created by \tJ. R. R. Tolkien in his novel \"The Lord of The Rings\".",
+  "Shub-Niggurath is a creature that was created by \tJ. R. R. Tolkien in his novel \"The Lord of The Rings\".": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Originally, the character Charlie from Charlie and the Chocolate Factory was going to be black.",
+  "Originally, the character Charlie from Charlie and the Chocolate Factory was going to be black.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The book 1984 was published in 1949.",
+  "The book 1984 was published in 1949.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The Harry Potter series of books, combined, are over 1,000,000 words in length.",
+  "The Harry Potter series of books, combined, are over 1,000,000 words in length.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The movie \"Tron\" received an Oscar nomination for Best Visual Effects.",
+  "The movie \"Tron\" received an Oscar nomination for Best Visual Effects.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In the original Star Wars trilogy, Alec Guinness provided the voice for Darth Vader.",
+  "In the original Star Wars trilogy, Alec Guinness provided the voice for Darth Vader.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Samuel L. Jackson had the words, 'Bad Motherf*cker' in-scripted on his lightsaber during the filming of Star Wars.",
+  "Samuel L. Jackson had the words, 'Bad Motherf*cker' in-scripted on his lightsaber during the filming of Star Wars.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Brandon Routh plays the titular character in the movie \"John Wick\".",
+  "Brandon Routh plays the titular character in the movie \"John Wick\".": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The weapon Clint Eastwood uses in \"Dirty Harry\" was a .44 Automag.",
+  "The weapon Clint Eastwood uses in \"Dirty Harry\" was a .44 Automag.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Ewan McGregor did not know the name of the second prequel film of Star Wars during and after filming.",
+  "Ewan McGregor did not know the name of the second prequel film of Star Wars during and after filming.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Leonardo DiCaprio won an Oscar for Best Actor in 2004's \"The Aviator\".",
+  "Leonardo DiCaprio won an Oscar for Best Actor in 2004's \"The Aviator\".": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The 2010 film \"The Social Network\" is a biographical drama film about MySpace founder Tom Anderson.",
+  "The 2010 film \"The Social Network\" is a biographical drama film about MySpace founder Tom Anderson.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In the original script of \"The Matrix\", the machines used humans as additional computing power instead of batteries.",
+  "In the original script of \"The Matrix\", the machines used humans as additional computing power instead of batteries.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "\"Cube\", \"Cube 2: Hypercube\" and \"Cube Zero\" were directed by the same person.",
+  "\"Cube\", \"Cube 2: Hypercube\" and \"Cube Zero\" were directed by the same person.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The color of the pills in the Matrix were Blue and Yellow.",
+  "The color of the pills in the Matrix were Blue and Yellow.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Actor Tommy Chong served prison time.",
+  "Actor Tommy Chong served prison time.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "\"Minions\" was released on the June 10th, 2015.",
+  "\"Minions\" was released on the June 10th, 2015.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Matt Damon played an astronaut stranded on an extraterrestrial planet in both of the movies Interstellar and The Martian.",
+  "Matt Damon played an astronaut stranded on an extraterrestrial planet in both of the movies Interstellar and The Martian.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In the original Star Wars trilogy, David Prowse was the actor who physically portrayed Darth Vader.",
+  "In the original Star Wars trilogy, David Prowse was the actor who physically portrayed Darth Vader.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In Alfred Hitchcock's film 'Psycho' it is said he used chocolate syrup to simulate the blood in the famous shower scene from ",
+  "In Alfred Hitchcock's film 'Psycho' it is said he used chocolate syrup to simulate the blood in the famous shower scene from ": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The Xenomorph from the science fiction film \"Alien\" has acidic blood.",
+  "The Xenomorph from the science fiction film \"Alien\" has acidic blood.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "There aren't any live-action clones in \"Star Wars: Episode III - Revenge of the Sith\".",
+  "There aren't any live-action clones in \"Star Wars: Episode III - Revenge of the Sith\".": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In the movie The Revenant, DiCaprio's character hunts down the killer of his son.",
+  "In the movie The Revenant, DiCaprio's character hunts down the killer of his son.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The movie \"The Nightmare before Christmas\" was all done with physical objects.",
+  "The movie \"The Nightmare before Christmas\" was all done with physical objects.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The song \"Mystery Train\" was released by artist \"Little Junior's Blue Flames\" in 1953.",
+  "The song \"Mystery Train\" was released by artist \"Little Junior's Blue Flames\" in 1953.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In 1993, Prince changed his name to an unpronounceable symbol because he was unhappy with his contract with Warner Bros.",
+  "In 1993, Prince changed his name to an unpronounceable symbol because he was unhappy with his contract with Warner Bros.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "American rapper Dr. Dre actually has a Ph.D. doctorate.",
+  "American rapper Dr. Dre actually has a Ph.D. doctorate.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "3 members of 2 Live Crew were arrested for playing songs from their album, As Nasty As They Wanna Be, live.",
+  "3 members of 2 Live Crew were arrested for playing songs from their album, As Nasty As They Wanna Be, live.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "EDM label Monstercat signs tracks instead of artists.",
+  "EDM label Monstercat signs tracks instead of artists.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Pete Townshend's solo album, \"White City: A Novel\", is set in the metropolitan area of Chicago.",
+  "Pete Townshend's solo album, \"White City: A Novel\", is set in the metropolitan area of Chicago.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The alternative rock band, They Might Be Giants, released their album 'Flood' in 1990. ",
+  "The alternative rock band, They Might Be Giants, released their album 'Flood' in 1990. ": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Scatman John's real name was John Paul Larkin.",
+  "Scatman John's real name was John Paul Larkin.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Eurobeat is primarily an Italian genre of music.",
+  "Eurobeat is primarily an Italian genre of music.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Ashley Frangipane performs under the stage name Halsey.",
+  "Ashley Frangipane performs under the stage name Halsey.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "\"The Division Bell\" is the final album of the progressive rock band Pink Floyd.",
+  "\"The Division Bell\" is the final album of the progressive rock band Pink Floyd.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Stevie Wonder's real name is Stevland Hardaway Morris.",
+  "Stevie Wonder's real name is Stevland Hardaway Morris.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Arcade Fire's 'The Suburbs' won the Album of the Year award in the 2011 Grammys.",
+  "Arcade Fire's 'The Suburbs' won the Album of the Year award in the 2011 Grammys.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The band STRFKR was also briefly known as Pyramiddd.",
+  "The band STRFKR was also briefly known as Pyramiddd.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "A Saxophone is a brass instrument.",
+  "A Saxophone is a brass instrument.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Nick Mason is the only member to appear on every Pink Floyd album.",
+  "Nick Mason is the only member to appear on every Pink Floyd album.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Muse is a British (English) rock band",
+  "Muse is a British (English) rock band": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Metallica collaborated with Rowan Atkinson's Mr Bean on a 1992 comic relief single.",
+  "Metallica collaborated with Rowan Atkinson's Mr Bean on a 1992 comic relief single.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Soulja Boy's 'Crank That' won a Grammy for Best Rap Song in 2007.",
+  "Soulja Boy's 'Crank That' won a Grammy for Best Rap Song in 2007.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Lead Singer Rivers Cuomo of American rock band Weezer attended Harvard.",
+  "Lead Singer Rivers Cuomo of American rock band Weezer attended Harvard.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Dave Grohl recorded the Foo Fighters' debut, \"Foo Fighters,\" by himself.",
+  "Dave Grohl recorded the Foo Fighters' debut, \"Foo Fighters,\" by himself.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The singer Billie Holiday was also known as \"Lady Day\".",
+  "The singer Billie Holiday was also known as \"Lady Day\".": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "\"Neutral Milk Hotel\" is a real band.",
+  "\"Neutral Milk Hotel\" is a real band.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The cover of The Beatles album \"Abbey Road\" featured a Volkswagen Beetle in the background.",
+  "The cover of The Beatles album \"Abbey Road\" featured a Volkswagen Beetle in the background.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Scottish producer Calvin Harris is from the town of Dumfries, Scotland.",
+  "Scottish producer Calvin Harris is from the town of Dumfries, Scotland.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The music group Daft Punk got their name from a negative review they recieved.",
+  "The music group Daft Punk got their name from a negative review they recieved.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The music video to The Buggle's \"Video Killed the Radio Star\" was the first music video to broadcast on MTV.",
+  "The music video to The Buggle's \"Video Killed the Radio Star\" was the first music video to broadcast on MTV.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Pink Guy's debut album was \"Pink Season\".",
+  "Pink Guy's debut album was \"Pink Season\".": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Green Day's album 'American Idiot' is considered a \"punk rock opera.\"",
+  "Green Day's album 'American Idiot' is considered a \"punk rock opera.\"": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "For his performance at ComplexCon 2016 in Long Beach, California, Skrillex revived his \"Mothership\" set piece for one night only.",
+  "For his performance at ComplexCon 2016 in Long Beach, California, Skrillex revived his \"Mothership\" set piece for one night only.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Big the Cat is a playable character in \"Sonic Generations\".",
+  "Big the Cat is a playable character in \"Sonic Generations\".": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Metal Gear Solid V: The Phantom Pain runs on the Fox Engine.",
+  "Metal Gear Solid V: The Phantom Pain runs on the Fox Engine.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In \"Super Mario Bros.\", the clouds and bushes have the same artwork and are just different colors.",
+  "In \"Super Mario Bros.\", the clouds and bushes have the same artwork and are just different colors.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Pac-Man was invented by the designer Toru Iwatani while he was eating pizza.",
+  "Pac-Man was invented by the designer Toru Iwatani while he was eating pizza.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In Rocket League, you can play Basketball.",
+  "In Rocket League, you can play Basketball.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In Terraria, you can craft the Cell Phone pre-hardmode.",
+  "In Terraria, you can craft the Cell Phone pre-hardmode.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Nintendo's Luigi was originally just called Green Mario?",
+  "Nintendo's Luigi was originally just called Green Mario?": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The game \"Jetpack Joyride\" was created by \"Redbrick Studios\".",
+  "The game \"Jetpack Joyride\" was created by \"Redbrick Studios\".": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In Until Dawn, both characters Sam and Mike cannot be killed under any means until the final chapter of the game.",
+  "In Until Dawn, both characters Sam and Mike cannot be killed under any means until the final chapter of the game.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Amazon acquired Twitch in August 2014 for $970 million dollars.",
+  "Amazon acquired Twitch in August 2014 for $970 million dollars.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In \"Minecraft\", gold tools are faster than diamond tools.",
+  "In \"Minecraft\", gold tools are faster than diamond tools.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "\"Half-Life 2\" runs on the Source Engine.",
+  "\"Half-Life 2\" runs on the Source Engine.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In Monster Hunter Generations, guild style is a type of hunting style.",
+  "In Monster Hunter Generations, guild style is a type of hunting style.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In RuneScape, one must complete the \"Dragon Slayer\" quest before equipping Rune Platelegs.",
+  "In RuneScape, one must complete the \"Dragon Slayer\" quest before equipping Rune Platelegs.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In the game \"Until Dawn\" Emily is the only playable character who can be killed by another playable character directly.",
+  "In the game \"Until Dawn\" Emily is the only playable character who can be killed by another playable character directly.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The ghosts in \"Pac-Man\" and \"Ms. Pac-Man\" have completely different behavior.",
+  "The ghosts in \"Pac-Man\" and \"Ms. Pac-Man\" have completely different behavior.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In \"League of Legends\", there exists four different types of Dragon.",
+  "In \"League of Legends\", there exists four different types of Dragon.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "TF2: The Heavy's voice actor, Gary Schwartz, voices the Demoman as well ",
+  "TF2: The Heavy's voice actor, Gary Schwartz, voices the Demoman as well ": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "During pre-production of \"Super Mario Bros.\", Mario originally was meant to shoot bullets.",
+  "During pre-production of \"Super Mario Bros.\", Mario originally was meant to shoot bullets.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The song \"Megalovania\" by Toby Fox made its third appearence in the 2015 RPG \"Undertale\".",
+  "The song \"Megalovania\" by Toby Fox made its third appearence in the 2015 RPG \"Undertale\".": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The ultimate phrase used by Pharah from Overwatch is: \"Justice rains from above!\"",
+  "The ultimate phrase used by Pharah from Overwatch is: \"Justice rains from above!\"": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In Sonic the Hedgehog universe, Tails' real name is Miles Prower.",
+  "In Sonic the Hedgehog universe, Tails' real name is Miles Prower.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The game \"Pocket Morty\" has a Morty called \"Pocket Mortys Morty\"?",
+  "The game \"Pocket Morty\" has a Morty called \"Pocket Mortys Morty\"?": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "There are 6 legendary cards in \"Clash Royale\".",
+  "There are 6 legendary cards in \"Clash Royale\".": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In \"Super Mario 64\", collecting 100 coins on a level will give you a 1-UP.",
+  "In \"Super Mario 64\", collecting 100 coins on a level will give you a 1-UP.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In \"Super Mario 3D World\", the Double Cherry power-up originated from a developer accidentally making two characters controllable.",
+  "In \"Super Mario 3D World\", the Double Cherry power-up originated from a developer accidentally making two characters controllable.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The names of Tom Nook's cousins in the Animal Crossing franchise are named \"Timmy\" and \"Jimmy\".",
+  "The names of Tom Nook's cousins in the Animal Crossing franchise are named \"Timmy\" and \"Jimmy\".": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Resident Evil 4 was originally meant to be a Nintendo GameCube exclusive.",
+  "Resident Evil 4 was originally meant to be a Nintendo GameCube exclusive.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Luigi is taller than Mario?",
+  "Luigi is taller than Mario?": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In the video game \"Splatoon\", the playable characters were originally going to be rabbits instead of squids.",
+  "In the video game \"Splatoon\", the playable characters were originally going to be rabbits instead of squids.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Unturned originally started as a Roblox game.",
+  "Unturned originally started as a Roblox game.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In Resident Evil 4, the Chicago Typewriter has infinite ammo.",
+  "In Resident Evil 4, the Chicago Typewriter has infinite ammo.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In \"Overwatch,\" an allied McCree will say \"Step right up\" upon using his ultimate ability Deadeye.",
+  "In \"Overwatch,\" an allied McCree will say \"Step right up\" upon using his ultimate ability Deadeye.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In the Monster Hunter Series, it is possible to capture Elder Dragons.",
+  "In the Monster Hunter Series, it is possible to capture Elder Dragons.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In \"Undertale\", the main character of the game is Sans.",
+  "In \"Undertale\", the main character of the game is Sans.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In \"Call Of Duty: World At War\", the first appearance of the \"PPSH-41\" in \"Zombies\" was in the map \"Der Riese\".",
+  "In \"Call Of Duty: World At War\", the first appearance of the \"PPSH-41\" in \"Zombies\" was in the map \"Der Riese\".": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The Mann Co. Store from Team Fortress 2 has the slogan \"We hire mercenaries and get in fights\".",
+  "The Mann Co. Store from Team Fortress 2 has the slogan \"We hire mercenaries and get in fights\".": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In Team Fortress 2, being disguised as a scout or medic results in a speed boost.",
+  "In Team Fortress 2, being disguised as a scout or medic results in a speed boost.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In Undertale, having a \"Fun Value\" set to 56-57 will play the \"Wrong Number Song Call\".",
+  "In Undertale, having a \"Fun Value\" set to 56-57 will play the \"Wrong Number Song Call\".": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "All of these maps were in \"Tom Clancy's Rainbow Six Siege\" on its initial release: House, Clubhouse, Border, Consulate.",
+  "All of these maps were in \"Tom Clancy's Rainbow Six Siege\" on its initial release: House, Clubhouse, Border, Consulate.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Pistons were added to Minecraft in Beta 1.5.",
+  "Pistons were added to Minecraft in Beta 1.5.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Solid Snake is actually a clone from the DNA of Big Boss in the Metal Gear Solid series' history.",
+  "Solid Snake is actually a clone from the DNA of Big Boss in the Metal Gear Solid series' history.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The ADAM collecters in the Bioshock series are known as Little Sisters.",
+  "The ADAM collecters in the Bioshock series are known as Little Sisters.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In the game \"Subnautica\", a \"Cave Crawler\" will attack you.",
+  "In the game \"Subnautica\", a \"Cave Crawler\" will attack you.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In \"Starbound\", the track played by the Decorated Music Box is named \"Atlas\".",
+  "In \"Starbound\", the track played by the Decorated Music Box is named \"Atlas\".": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In Pokemon Sun and Moon, a male Salandit can evolve to a Salazzle.",
+  "In Pokemon Sun and Moon, a male Salandit can evolve to a Salazzle.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In \"Sonic Adventure\", you are able to transform into Super Sonic at will after completing the main story.",
+  "In \"Sonic Adventure\", you are able to transform into Super Sonic at will after completing the main story.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The Konami Code is known as Up, Up, Down, Down, Left, Right, Right, Left, B, A, Start.",
+  "The Konami Code is known as Up, Up, Down, Down, Left, Right, Right, Left, B, A, Start.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The main character in the \"Half-Life\" franchise is named Morgan Freeman.",
+  "The main character in the \"Half-Life\" franchise is named Morgan Freeman.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "\"Resident Evil 7\" is the first first-person Resident Evil game.",
+  "\"Resident Evil 7\" is the first first-person Resident Evil game.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "\"Tachycardia\" or \"Tachyarrhythmia\" refers to a resting heart-rate near or over 100 BPM.",
+  "\"Tachycardia\" or \"Tachyarrhythmia\" refers to a resting heart-rate near or over 100 BPM.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The planet Mars has two moons orbiting it.",
+  "The planet Mars has two moons orbiting it.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Type 1 diabetes is a result of the liver working improperly.",
+  "Type 1 diabetes is a result of the liver working improperly.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Pneumonoultramicroscopicsilicovolcanoconiosis is a synonym for the disease known as silicosis.",
+  "Pneumonoultramicroscopicsilicovolcanoconiosis is a synonym for the disease known as silicosis.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Anatomy considers the forms of macroscopic structures such as organs and organ systems.",
+  "Anatomy considers the forms of macroscopic structures such as organs and organ systems.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Like with the Neanderthals, Homo sapiens sapiens also interbred with the Denisovans.",
+  "Like with the Neanderthals, Homo sapiens sapiens also interbred with the Denisovans.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Igneous rocks are formed by excessive heat and pressure.",
+  "Igneous rocks are formed by excessive heat and pressure.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Water always boils at 100°C, 212°F, 373.15K, no matter where you are.",
+  "Water always boils at 100°C, 212°F, 373.15K, no matter where you are.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "A person can get sunburned on a cloudy day.",
+  "A person can get sunburned on a cloudy day.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The \"Gympie Stinger\" is the deadliest plant in the world.",
+  "The \"Gympie Stinger\" is the deadliest plant in the world.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The value of one Calorie is different than the value of one calorie.",
+  "The value of one Calorie is different than the value of one calorie.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In the periodic table, Potassium's symbol is the letter K.",
+  "In the periodic table, Potassium's symbol is the letter K.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "It was once believed that injecting shark cartilage into people would prevent them from contracting cancer.",
+  "It was once believed that injecting shark cartilage into people would prevent them from contracting cancer.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Scientists accidentally killed the once known world's oldest living creature, a mollusc, known to be aged as 507 years old.",
+  "Scientists accidentally killed the once known world's oldest living creature, a mollusc, known to be aged as 507 years old.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "A defibrillator is used to start up a heartbeat once a heart has stopped beating.",
+  "A defibrillator is used to start up a heartbeat once a heart has stopped beating.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Steel is an alloy of Iron and Carbon.",
+  "Steel is an alloy of Iron and Carbon.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "An atom contains a nucleus.",
+  "An atom contains a nucleus.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The Doppler effect applies to light.",
+  "The Doppler effect applies to light.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "A plant that has a life cycle for more than a year is known as an annual.",
+  "A plant that has a life cycle for more than a year is known as an annual.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "An Astronomical Unit is the distance between Earth and the Moon.",
+  "An Astronomical Unit is the distance between Earth and the Moon.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "All program codes have to be compiled into an executable file in order to be run. This file can then be executed on any machine.",
+  "All program codes have to be compiled into an executable file in order to be run. This file can then be executed on any machine.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "\"HTML\" stands for Hypertext Markup Language.",
+  "\"HTML\" stands for Hypertext Markup Language.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "FLAC stands for \"Free Lossless Audio Condenser\"'",
+  "FLAC stands for \"Free Lossless Audio Condenser\"'": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Linux was first created as an alternative to Windows XP.",
+  "Linux was first created as an alternative to Windows XP.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Ada Lovelace is often considered the first computer programmer.",
+  "Ada Lovelace is often considered the first computer programmer.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The common software-programming acronym \"I18N\" comes from the term \"Interlocalization\".",
+  "The common software-programming acronym \"I18N\" comes from the term \"Interlocalization\".": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The last Windows operating system to be based on the Windows 9x kernel was Windows 98.",
+  "The last Windows operating system to be based on the Windows 9x kernel was Windows 98.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "DHCP stands for Dynamic Host Configuration Port.",
+  "DHCP stands for Dynamic Host Configuration Port.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The very first recorded computer \"bug\" was a moth found inside a Harvard Mark II computer.",
+  "The very first recorded computer \"bug\" was a moth found inside a Harvard Mark II computer.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Pointers were not used in the original C programming language; they were added later on in C++.",
+  "Pointers were not used in the original C programming language; they were added later on in C++.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The Windows ME operating system was released in the year 2000.",
+  "The Windows ME operating system was released in the year 2000.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "RAM stands for Random Access Memory.",
+  "RAM stands for Random Access Memory.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "A Boolean value of \"0\" represents which of these words?",
+  "A Boolean value of \"0\" represents which of these words?": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "It's not possible to format a write-protected DVD-R Hard Disk.",
+  "It's not possible to format a write-protected DVD-R Hard Disk.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The Python programming language gets its name from the British comedy group \"Monty Python.\"",
+  "The Python programming language gets its name from the British comedy group \"Monty Python.\"": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Linus Torvalds created Linux and Git.",
+  "Linus Torvalds created Linux and Git.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Linus Sebastian is the creator of the Linux kernel, which went on to be used in Linux, Android, and Chrome OS.",
+  "Linus Sebastian is the creator of the Linux kernel, which went on to be used in Linux, Android, and Chrome OS.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The HTML5 standard was published in 2014.",
+  "The HTML5 standard was published in 2014.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Time on Computers is measured via the EPOX System.",
+  "Time on Computers is measured via the EPOX System.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The Windows 7 operating system has six main editions.",
+  "The Windows 7 operating system has six main editions.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Tokyo is the capital of Japan.",
+  "Tokyo is the capital of Japan.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Antarctica is the largest desert in the world.",
+  "Antarctica is the largest desert in the world.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The Sonoran Desert is located in eastern Africa.",
+  "The Sonoran Desert is located in eastern Africa.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The capital of the US State Ohio is the city of Chillicothe.",
+  "The capital of the US State Ohio is the city of Chillicothe.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Is Tartu the capital of Estonia?",
+  "Is Tartu the capital of Estonia?": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The two largest ethnic groups of Belgium are Flemish and Walloon. ",
+  "The two largest ethnic groups of Belgium are Flemish and Walloon. ": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Greenland is covered with grass and Iceland covered with ice.",
+  "Greenland is covered with grass and Iceland covered with ice.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Nova Scotia is on the east coast of Canada.",
+  "Nova Scotia is on the east coast of Canada.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "There are no deserts in Europe.",
+  "There are no deserts in Europe.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Rhode Island is actually located on the US mainland, despite its name.",
+  "Rhode Island is actually located on the US mainland, despite its name.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "California is larger than Japan.",
+  "California is larger than Japan.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "St. Louis is the capital of the US State Missouri.",
+  "St. Louis is the capital of the US State Missouri.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The Southeast Asian island of Borneo is politically divided among 3 countries.",
+  "The Southeast Asian island of Borneo is politically divided among 3 countries.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "New Haven is the capital city of the state of Connecticut in the United States.",
+  "New Haven is the capital city of the state of Connecticut in the United States.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Switzerland has four national languages, English being one of them.",
+  "Switzerland has four national languages, English being one of them.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Vatican City is a country.",
+  "Vatican City is a country.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Gothenburg is the capital of Sweden.",
+  "Gothenburg is the capital of Sweden.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Hungary is the only country in the world beginning with H.",
+  "Hungary is the only country in the world beginning with H.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "There exists an island named \"Java\".",
+  "There exists an island named \"Java\".": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Japan has left-hand side traffic.",
+  "Japan has left-hand side traffic.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Alaska is the largest state in the United States.",
+  "Alaska is the largest state in the United States.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "San Marino is the only country completely surrounded by another country.",
+  "San Marino is the only country completely surrounded by another country.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The title of the 1969 film \"Krakatoa, East_of Java\" is incorrect, as Krakatoa is in fact west of Java.",
+  "The title of the 1969 film \"Krakatoa, East_of Java\" is incorrect, as Krakatoa is in fact west of Java.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "\"Mongolia\" was a part of the now non-existent U.S.S.R.",
+  "\"Mongolia\" was a part of the now non-existent U.S.S.R.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "You could walk from Norway to North Korea while only passing through Russia.",
+  "You could walk from Norway to North Korea while only passing through Russia.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "A group of islands is called an 'archipelago'.",
+  "A group of islands is called an 'archipelago'.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Seoul is the capital of North Korea.",
+  "Seoul is the capital of North Korea.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Liechtenstein does not have an airport.",
+  "Liechtenstein does not have an airport.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Ottawa is the capital of Canada.",
+  "Ottawa is the capital of Canada.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "There is an island in Japan called Ōkunoshima, A.K.A. \"Rabbit Island\", so named because of it's huge population of rabbits.",
+  "There is an island in Japan called Ōkunoshima, A.K.A. \"Rabbit Island\", so named because of it's huge population of rabbits.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "There are no roads in/out of Juneau, Alaska.",
+  "There are no roads in/out of Juneau, Alaska.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The flag of South Africa features 7 colours.",
+  "The flag of South Africa features 7 colours.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Greenland is almost as big as Africa.",
+  "Greenland is almost as big as Africa.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Toronto is the capital city of the North American country of Canada.",
+  "Toronto is the capital city of the North American country of Canada.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The longest place named in the United States is Lake Chargoggagoggmanchauggagoggchaubunagungamaugg, located near Webster, MA.",
+  "The longest place named in the United States is Lake Chargoggagoggmanchauggagoggchaubunagungamaugg, located near Webster, MA.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Vietnam is the only country in the world that starts with V. ",
+  "Vietnam is the only country in the world that starts with V. ": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The Republic of Malta is the smallest microstate worldwide.",
+  "The Republic of Malta is the smallest microstate worldwide.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The surface area of Russia is slightly larger than that of the dwarf planet Pluto.",
+  "The surface area of Russia is slightly larger than that of the dwarf planet Pluto.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Only one country in the world starts with the letter Q.",
+  "Only one country in the world starts with the letter Q.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "There is a city called Rome in every continent on Earth.",
+  "There is a city called Rome in every continent on Earth.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The fourth funnel of the RMS Titanic was fake designed to make the ship look more powerful and symmetrical.",
+  "The fourth funnel of the RMS Titanic was fake designed to make the ship look more powerful and symmetrical.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Sargon II, a king of the Neo-Assyrian Empire, was a direct descendant of Sargon of Akkad.",
+  "Sargon II, a king of the Neo-Assyrian Empire, was a direct descendant of Sargon of Akkad.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Former United States Presidents John Adams and Thomas Jefferson died within hours of each other.",
+  "Former United States Presidents John Adams and Thomas Jefferson died within hours of each other.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Japan was part of the Allied Powers during World War I.",
+  "Japan was part of the Allied Powers during World War I.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "In World War ll, Great Britian used inflatable tanks on the ports of Great Britain to divert Hitler away from Normandy/D-day landing.",
+  "In World War ll, Great Britian used inflatable tanks on the ports of Great Britain to divert Hitler away from Normandy/D-day landing.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Thomas Crapper was a plumber who invented the flushing toilet.",
+  "Thomas Crapper was a plumber who invented the flushing toilet.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Abraham Lincoln was the first U.S. President to be born outside the borders of the thirteen original states. ",
+  "Abraham Lincoln was the first U.S. President to be born outside the borders of the thirteen original states. ": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "Adolf Hitler was tried at the Nuremberg trials.",
+  "Adolf Hitler was tried at the Nuremberg trials.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Sir Issac Newton served as a Member of Parliament, but the only recorded time he spoke was to complain about a draft in the chambers.",
+  "Sir Issac Newton served as a Member of Parliament, but the only recorded time he spoke was to complain about a draft in the chambers.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The M41 Walker Bulldog remains in service in some countries to this day.",
+  "The M41 Walker Bulldog remains in service in some countries to this day.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The Kingdom of Prussia briefly held land in Estonia.",
+  "The Kingdom of Prussia briefly held land in Estonia.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "In World War II, Hawker Typhoons served in the Pacific theater.",
+  "In World War II, Hawker Typhoons served in the Pacific theater.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The two atomic bombs dropped on Japan by the United States in August 1945 were named 'Little Man' and 'Fat Boy'.",
+  "The two atomic bombs dropped on Japan by the United States in August 1945 were named 'Little Man' and 'Fat Boy'.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The Tiananmen Square protests of 1989 were held in Hong Kong.",
+  "The Tiananmen Square protests of 1989 were held in Hong Kong.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The Battle of Trafalgar took place on October 23rd, 1805",
+  "The Battle of Trafalgar took place on October 23rd, 1805": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "Theodore Roosevelt Jr. was the only General involved in the initial assault on D-Day.",
+  "Theodore Roosevelt Jr. was the only General involved in the initial assault on D-Day.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The Cold War ended with Joseph Stalin's death.",
+  "The Cold War ended with Joseph Stalin's death.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The first televised presidential debate was between Jimmy Carter and Gerald Ford.",
+  "The first televised presidential debate was between Jimmy Carter and Gerald Ford.": {
+    "left": "false",
+    "right": "true",
     "answer": false
   },
-  {
-    "text": "The Hundred Years' War was fought for more than a hundred years.",
+  "The Hundred Years' War was fought for more than a hundred years.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   },
-  {
-    "text": "The United States Department of Homeland Security was formed in response to the September 11th attacks.",
+  "The United States Department of Homeland Security was formed in response to the September 11th attacks.": {
+    "left": "false",
+    "right": "true",
     "answer": true
   }
-]
+}

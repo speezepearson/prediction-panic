@@ -2,7 +2,11 @@ import { defineSchema, defineTable } from "convex/server";
 import { v, Validator } from "convex/values";
 import { PlayerId } from "./validation";
 
-const vQuestion = v.object({ text: v.string(), answer: v.boolean() });
+const vRedactedQuestion = v.object({
+  text: v.string(),
+  left: v.string(),
+  right: v.string(),
+});
 const vPlayerGuesses = v.record(v.string() as Validator<PlayerId>, v.number());
 
 const applicationTables = {
@@ -18,7 +22,8 @@ const applicationTables = {
     ),
     finishedRounds: v.array(
       v.object({
-        question: vQuestion,
+        question: vRedactedQuestion,
+        answer: v.boolean(),
         guesses: vPlayerGuesses,
       })
     ),
@@ -26,7 +31,7 @@ const applicationTables = {
 
   currentRounds: defineTable({
     gameId: v.id("games"),
-    question: vQuestion,
+    question: vRedactedQuestion,
     guesses: vPlayerGuesses,
   }).index("by_gameId", ["gameId"]),
 };

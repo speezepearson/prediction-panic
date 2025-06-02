@@ -5,14 +5,13 @@ import { mutation, query, internalMutation } from "./_generated/server";
 import { ConvexError, v, Validator } from "convex/values";
 import { Doc } from "./_generated/dataModel";
 import { internal } from "./_generated/api";
-import allQuestions from "./questions.json";
 import {
+  fullQuestions,
   gameNumRoundsSchema,
   GameQuickId,
   gameQuickIdSchema,
   gameSecondsPerQuestionSchema,
   PlayerId,
-  Question,
 } from "./validation";
 import z from "zod/v4";
 
@@ -159,11 +158,19 @@ export const tickGame = internalMutation({
       .withIndex("by_gameId", (q) => q.eq("gameId", gameId))
       .unique();
     if (currentRound) {
+      const answer = fullQuestions.get(currentRound.question.text)?.answer;
+      if (answer === undefined) {
+        throw new ConvexError("Internal error: Question not found");
+      }
       await Promise.all([
         ctx.db.patch(gameId, {
           finishedRounds: [
             ...game.finishedRounds,
-            { question: currentRound.question, guesses: currentRound.guesses },
+            {
+              question: currentRound.question,
+              answer,
+              guesses: currentRound.guesses,
+            },
           ],
         }),
         ctx.db.delete(currentRound._id),
@@ -179,14 +186,23 @@ export const tickGame = internalMutation({
     const askedQuestions = new Set(
       game.finishedRounds.map((round) => round.question.text)
     );
-    const nextQuestion = _.sample(
-      allQuestions.filter((question) => !askedQuestions.has(question.text))
+    const allQuestionTexts = Array.from(fullQuestions.keys());
+    const nextQuestionText = _.sample(
+      allQuestionTexts.filter((q) => !askedQuestions.has(q))
     )!;
+    const nextQuestion = fullQuestions.get(nextQuestionText);
+    if (nextQuestion === undefined) {
+      throw new ConvexError("Internal error: Question not found");
+    }
 
     await Promise.all([
       ctx.db.insert("currentRounds", {
         gameId,
-        question: nextQuestion,
+        question: {
+          text: nextQuestionText,
+          left: nextQuestion.left,
+          right: nextQuestion.right,
+        },
         guesses: Object.fromEntries(
           Object.keys(game.players).map((playerId) => [playerId, 0.5])
         ),
