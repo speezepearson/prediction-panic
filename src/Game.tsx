@@ -15,6 +15,8 @@ import {
 } from "../convex/validation";
 import { CalibrationData, CalibrationPlot } from "./CalibrationPlot";
 import {
+  ANON_DISPLAY_NAMES,
+  cn,
   errString,
   formatPlusMinusInt,
   formatProbabilityAsPercentage,
@@ -22,6 +24,7 @@ import {
   ifEnter,
 } from "./lib/utils";
 import { usePlayerId } from "./player-info";
+import { List, Map } from "immutable";
 
 interface GameLobbyProps {
   game: LobbyGame;
@@ -118,6 +121,8 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
     });
   }, [canUpdateSettings, handleUpdateSettings, rounds, secondsPerQuestion]);
 
+  const anonDisplayNames = useMemo(() => getAnonDisplayNames(game), [game]);
+
   if (!game) {
     // Still loading game details
     return (
@@ -173,7 +178,7 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
                   key={id}
                   className="text-gray-800 px-2 py-0 border rounded-md bg-gray-200"
                 >
-                  {name || "(anonymous)"}
+                  {name || anonDisplayNames.get(id)}
                 </div>
               ))}
           </div>
@@ -279,7 +284,7 @@ function EditableName({
         type="text"
         autoFocus
         placeholder="Your name"
-        className="w-full px-2 py-1 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
+        className="w-full px-2 py-1 font-bold bg-blue-100 border-blue-400 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
         value={name}
         onChange={(e) => {
           setName(e.target.value);
@@ -312,6 +317,8 @@ export function RunningGame({
     return getPlayerScores(game);
   }, [game]);
 
+  const anonDisplayNames = useMemo(() => getAnonDisplayNames(game), [game]);
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-6 pb-4 border-b">
@@ -332,10 +339,13 @@ export function RunningGame({
           .map(([id, { name }]) => (
             <div
               key={id}
-              className="text-gray-800 px-2 py-0 border rounded-md bg-gray-200 flex flex-col items-center"
+              className={cn(
+                "text-gray-800 px-2 py-0 border rounded-md bg-gray-200 flex flex-col items-center",
+                id === playerId && "bg-blue-200 border-blue-400"
+              )}
             >
               <div className="font-bold">
-                {id === playerId ? "You" : name || "(anonymous)"}
+                {name || anonDisplayNames.get(id)}
               </div>
               <div>{formatPlusMinusInt(scores[id] ?? 0)}</div>
             </div>
@@ -566,4 +576,14 @@ function getPlayerScores(game: Doc<"games">): Record<PlayerId, number> {
     }
   }
   return res;
+}
+
+function getAnonDisplayNames(game: Doc<"games">): Map<PlayerId, string> {
+  const ids = List(getRecordEntries(game.players).map(([id]) => id)).sort();
+  return Map(
+    ids.map((id, i) => [
+      id,
+      ANON_DISPLAY_NAMES.get(i % ANON_DISPLAY_NAMES.size)!,
+    ])
+  );
 }

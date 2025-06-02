@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { ConvexError } from "convex/values";
+import { List } from "immutable";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -39,10 +40,21 @@ export function errString(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
-export function ifEnter<T>(f: () => unknown): (e: { key: string }) => void {
+export function ifEnter(f: () => unknown): (e: { key: string }) => void {
   return (e) => {
     if (e.key === "Enter") {
       return f();
     }
   };
 }
+
+export const ANON_DISPLAY_NAMES = List([
+  "Anonymous",
+  "Nobody",
+  "Incognito",
+  "Masked Man",
+  "Empty",
+  "Anonymo",
+  "Anon",
+  "???",
+]);
