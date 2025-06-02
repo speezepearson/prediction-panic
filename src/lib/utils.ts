@@ -28,8 +28,8 @@ export function formatProbabilityAsPercentage(prob: number): string {
   return `${(prob * 100).toFixed(decimalPlaces)}%`;
 }
 
-export function formatPlusMinus(n: number): string {
-  return n > 0 ? `+${n}` : n.toFixed(0);
+export function formatPlusMinusInt(n: number): string {
+  return n > 0 ? `+${n.toFixed(0)}` : n.toFixed(0);
 }
 
 export function errString(error: unknown): string {

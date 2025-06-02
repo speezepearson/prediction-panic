@@ -16,7 +16,7 @@ import {
 import { CalibrationData, CalibrationPlot } from "./CalibrationPlot";
 import {
   errString,
-  formatPlusMinus,
+  formatPlusMinusInt,
   formatProbabilityAsPercentage,
   getRecordEntries,
 } from "./lib/utils";
@@ -147,22 +147,29 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
         </p>
       </div>
       <div className="mb-6">
-        <h3 className="text-xl font-semibold text-gray-700 mb-2">Players</h3>
-        <ul className="p-3 rounded-md">
-          {getRecordEntries(game.players)
-            .sort(([idA, { name: a }], [idB, { name: b }]) =>
-              idA === playerId ? -1 : idB === playerId ? 1 : a.localeCompare(b)
-            )
-            .map(([id, { name }]) => (
-              <li key={id} className="text-gray-800 border">
-                {id === playerId ? (
-                  <EditableName game={game} playerId={playerId} />
-                ) : (
-                  <div className="px-2 py-1">{name || "(anonymous)"}</div>
-                )}
-              </li>
-            ))}
-        </ul>
+        <h3 className="text-xl font-semibold text-gray-700">Players</h3>
+        <div className="p-4">
+          <div className="flex flex-row gap-2 mb-2">
+            {getRecordEntries(game.players)
+              .sort(([idA, { name: a }], [idB, { name: b }]) =>
+                idA === playerId
+                  ? -1
+                  : idB === playerId
+                    ? 1
+                    : a.localeCompare(b)
+              )
+              .filter(([id]) => id !== playerId)
+              .map(([id, { name }]) => (
+                <div
+                  key={id}
+                  className="text-gray-800 px-2 py-0 border rounded-md bg-gray-200"
+                >
+                  {name || "(anonymous)"}
+                </div>
+              ))}
+          </div>
+          <EditableName game={game} playerId={playerId} />
+        </div>
       </div>
       <div className="flex flex-col gap-2">
         <h3 className="text-xl font-semibold text-gray-700 mb-2">Settings</h3>
@@ -295,6 +302,11 @@ export function RunningGame({
   const currentRound = useQuery(api.games.getCurrentRound, {
     gameId: game._id,
   });
+
+  const scores = useMemo(() => {
+    return getPlayerScores(game);
+  }, [game]);
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-6 pb-4 border-b">
@@ -305,6 +317,22 @@ export function RunningGame({
         >
           Leave
         </button>
+      </div>
+
+      <div className="flex flex-row gap-2 mb-2 w-full items-center justify-center mx-auto">
+        {getRecordEntries(game.players)
+          .sort(([idA, { name: a }], [idB, { name: b }]) =>
+            idA === playerId ? -1 : idB === playerId ? 1 : a.localeCompare(b)
+          )
+          .map(([id, { name }]) => (
+            <div
+              key={id}
+              className="text-gray-800 px-2 py-0 border rounded-md bg-gray-200 flex flex-col items-center"
+            >
+              <div className="font-bold">{name || "(anonymous)"}</div>
+              <div>{formatPlusMinusInt(scores[id] ?? 0)}</div>
+            </div>
+          ))}
       </div>
 
       <div className="w-full min-h-80 border border-blue-300 bg-blue-50 rounded-md relative">
@@ -352,32 +380,6 @@ function GameOver({
   return (
     <div className="flex flex-col justify-center items-center h-full w-full">
       <h2 className="text-2xl font-bold text-gray-800">Game Over!</h2>
-      <div className="flex flex-row items-center justify-center gap-2">
-        <table className="table-auto border-collapse border border-gray-300">
-          <thead>
-            <tr>
-              <th className="px-2 py-1 border border-gray-300">Player</th>
-              <th className="px-2 py-1 border border-gray-300">Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {getRecordEntries(scores)
-              .sort(([idA, scoreA], [idB, scoreB]) => scoreB - scoreA)
-              .map(([id, score]) => (
-                <tr key={id}>
-                  <td className="text-center px-2 py-1 border border-gray-300">
-                    {id === playerId
-                      ? "You"
-                      : (game.players[id]?.name ?? "???")}
-                  </td>
-                  <td className="text-center px-2 py-1 border border-gray-300">
-                    {score.toFixed(0)}
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
       <ScorePlot game={game} playerId={playerId} />
       <button
         disabled={isWorking}
@@ -489,8 +491,8 @@ function ActiveRound({
               )}
             </div>
             <div className="text-sm text-gray-500">
-              {formatPlusMinus(Math.round(scoreGuess(playerGuess, false)))} /{" "}
-              {formatPlusMinus(Math.round(scoreGuess(playerGuess, true)))}
+              {formatPlusMinusInt(Math.round(scoreGuess(playerGuess, false)))} /{" "}
+              {formatPlusMinusInt(Math.round(scoreGuess(playerGuess, true)))}
             </div>
           </div>
           <button
@@ -546,4 +548,15 @@ function ScorePlot({
       <CalibrationPlot title={`${whose} Calibration Curve`} data={data} />
     </div>
   );
+}
+
+function getPlayerScores(game: Doc<"games">): Record<PlayerId, number> {
+  const res: Record<PlayerId, number> = {};
+  for (const round of game.finishedRounds) {
+    for (const [playerId, guess] of getRecordEntries(round.guesses)) {
+      res[playerId] ??= 0;
+      res[playerId] += scoreGuess(guess, round.question.answer);
+    }
+  }
+  return res;
 }
