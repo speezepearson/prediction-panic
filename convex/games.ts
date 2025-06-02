@@ -40,7 +40,7 @@ export const createGame = mutation({
     const gameId = await ctx.db.insert("games", {
       quickId,
       started: false,
-      roundsRemaining: 100,
+      roundsRemaining: Math.min(100, fullQuestions.size),
       secondsPerQuestion: 10,
       players: { [playerId]: { name: "" } },
       finishedRounds: [],

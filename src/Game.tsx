@@ -200,7 +200,7 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
             className="col-span-2 px-3 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
           />
           {rounds.error && (
-            <div className="text-red-500 text-sm">
+            <div className="text-red-500 text-sm col-span-3 ml-auto">
               {z.prettifyError(rounds.error)}
             </div>
           )}
@@ -224,7 +224,7 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
             className="col-span-2 px-3 py-2 rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-shadow shadow-sm disabled:bg-gray-100"
           />
           {secondsPerQuestion.error && (
-            <div className="text-red-500 text-sm">
+            <div className="text-red-500 text-sm col-span-3 ml-auto">
               {z.prettifyError(secondsPerQuestion.error)}
             </div>
           )}

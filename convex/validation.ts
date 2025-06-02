@@ -32,7 +32,9 @@ export const gameNumRoundsSchema = z
   .number()
   .int()
   .min(1)
-  .max(redactedQuestions.size);
+  .max(redactedQuestions.size, {
+    error: `There are only ${redactedQuestions.size} questions`,
+  });
 export const gamePlayerGuessSchema = z.number().min(0).max(1);
 
 export const playerIdSchema = z.string().trim().length(10).brand("playerId");
