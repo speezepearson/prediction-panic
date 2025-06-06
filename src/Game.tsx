@@ -27,6 +27,7 @@ import {
 } from "./lib/utils";
 import { usePlayerId } from "./player-info";
 import { List, Map } from "immutable";
+import QRCode from "react-qr-code";
 
 interface GameLobbyProps {
   game: LobbyGame;
@@ -160,6 +161,10 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
         </div>
         <p className="text-sm text-blue-600 text-center">
           Share this ID with friends so they can join!
+          <details>
+            <summary>QR</summary>
+            <QRCode className="mx-auto" value={window.location.href} />
+          </details>
         </p>
       </div>
       <div className="mb-6">
