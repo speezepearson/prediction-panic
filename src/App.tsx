@@ -4,6 +4,7 @@ import { toast, Toaster } from "sonner";
 import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
 import {
+  GameQuickId,
   gameQuickIdSchema,
   LobbyGame,
   StartedGame,
@@ -13,15 +14,21 @@ import { GameLobby, RunningGame } from "./Game";
 import { usePlayerId } from "./player-info";
 import { errString } from "./lib/utils";
 
-export default function App() {
+export default function App({
+  gameQuickIdFromHash,
+}: {
+  gameQuickIdFromHash: GameQuickId | undefined;
+}) {
   return (
     <div className="flex flex-col">
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm h-16 flex justify-between items-center border-b shadow-sm px-4">
-        <h2 className="text-xl font-semibold text-primary">Probable Panic</h2>
+        <h2 className="text-xl font-semibold text-primary">
+          <a href="/">Probable Panic</a>
+        </h2>
       </header>
       <main className="flex-1 flex items-center justify-center p-8">
         <div className="w-full mx-auto">
-          <Content />
+          <Content gameQuickIdFromHash={gameQuickIdFromHash} />
         </div>
       </main>
       <Toaster />
@@ -29,11 +36,30 @@ export default function App() {
   );
 }
 
-function Content() {
+function Content({
+  gameQuickIdFromHash,
+}: {
+  gameQuickIdFromHash: GameQuickId | undefined;
+}) {
   const playerId = usePlayerId();
   useEffect(() => {
     console.log("playerId", playerId);
   }, [playerId]);
+  const joinGameMutation = useMutation(api.games.joinGame);
+  useEffect(() => {
+    console.log("gameQuickIdFromHash", gameQuickIdFromHash);
+    if (gameQuickIdFromHash) {
+      joinGameMutation({ quickId: gameQuickIdFromHash, playerId })
+        .then((gameId) => {
+          setCurrentGameId(gameId);
+          window.location.hash = gameQuickIdFromHash;
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error("Failed to join game");
+        });
+    }
+  }, [gameQuickIdFromHash, playerId, joinGameMutation]);
 
   const [currentGameId, setCurrentGameId] = useState<Id<"games"> | null>(null);
   const currentGame: StartedGame | LobbyGame | null | undefined = useQuery(
@@ -47,7 +73,10 @@ function Content() {
         <RunningGame
           game={currentGame}
           playerId={playerId}
-          onLeave={() => setCurrentGameId(null)}
+          onLeave={() => {
+            setCurrentGameId(null);
+            window.location.hash = "";
+          }}
         />
       );
     } else {
@@ -55,7 +84,10 @@ function Content() {
         <GameLobby
           playerId={playerId}
           game={currentGame}
-          onLeave={() => setCurrentGameId(null)}
+          onLeave={() => {
+            setCurrentGameId(null);
+            window.location.hash = "";
+          }}
         />
       );
     }
@@ -70,7 +102,12 @@ function Content() {
 
       <div className="space-y-6">
         <div>
-          <CreateGameButton onCreate={(id) => setCurrentGameId(id)}>
+          <CreateGameButton
+            onCreate={({ id, quickId }) => {
+              setCurrentGameId(id);
+              window.location.hash = quickId;
+            }}
+          >
             Create New Game
           </CreateGameButton>
         </div>
@@ -105,6 +142,7 @@ function JoinGameForm({
       playerId,
     })
       .then((gameId) => {
+        window.location.hash = quickId;
         setCurrentGameId(gameId);
         toast.success("Joined game!");
       })

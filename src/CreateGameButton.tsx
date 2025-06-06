@@ -5,12 +5,13 @@ import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
 import { usePlayerId } from "./player-info";
 import { errString } from "./lib/utils";
+import { GameQuickId } from "../convex/validation";
 
 export function CreateGameButton({
   children,
   onCreate,
 }: {
-  onCreate: (id: Id<"games">) => void;
+  onCreate: (data: { id: Id<"games">; quickId: GameQuickId }) => void;
   children: React.ReactNode;
 }) {
   const playerId = usePlayerId();
@@ -22,10 +23,10 @@ export function CreateGameButton({
 
   const handleCreateGame = async () => {
     try {
-      const { _id: gameId } = await createGame({
+      const { _id: gameId, quickId } = await createGame({
         playerId,
       });
-      onCreate(gameId);
+      onCreate({ id: gameId, quickId });
     } catch (error) {
       toast.error(errString(error));
     }
