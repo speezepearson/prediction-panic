@@ -27,7 +27,8 @@ export const CalibrationPlot = ({
         ? [d.question.right, d.question.left]
         : [d.question.left, d.question.right];
       const score = scoreGuess(d.prob, d.question.answer);
-      const text = `Q. ${d.question.text}<br>A. ${rightAnswer} (vs ${wrongAnswer})<br>You gave ${rightAnswer}: ${formatProbabilityAsPercentage(d.prob)} (${formatPlusMinusInt(score)}pt)`;
+      const rightProb = d.question.answer ? d.prob : 1 - d.prob;
+      const text = `Q. ${d.question.text}<br>A. ${rightAnswer} (vs ${wrongAnswer})<br>You gave ${rightAnswer}: ${formatProbabilityAsPercentage(rightProb)} (${formatPlusMinusInt(score)}pt)`;
       if (xVal === x[x.length - 1]) {
         y[y.length - 1] += score;
         texts[texts.length - 1] += `<br><br>${text}`;
