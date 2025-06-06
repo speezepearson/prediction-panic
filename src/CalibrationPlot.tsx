@@ -12,38 +12,30 @@ export type CalibrationData = {
 
 export const CalibrationPlot = ({
   data,
-  title,
   width,
 }: {
   data: CalibrationData[];
-  title: string;
   width: number;
 }) => {
   const plotData = useMemo((): { traces: Data[]; layout: Partial<Layout> } => {
-    const x: number[] = [50];
-    const y: number[] = [0];
-    const texts: string[] = [""];
-    for (const d of List(data).sortBy((d) => Math.abs(d.prob - 0.5))) {
-      const xVal = 100 * (d.prob < 0.5 ? 1 - d.prob : d.prob);
+    const x: number[] = [];
+    const y: number[] = [];
+    const texts: string[] = [];
+    for (const d of data) {
       const [rightAnswer, wrongAnswer] = d.question.answer
         ? [d.question.right, d.question.left]
         : [d.question.left, d.question.right];
       const score = scoreGuess(d.prob, d.question.answer);
-      const rightProb = d.question.answer ? d.prob : 1 - d.prob;
-      const text = `Q. ${d.question.text}<br>A. ${rightAnswer} (vs ${wrongAnswer})<br>You gave ${rightAnswer}: ${formatProbabilityAsPercentage(rightProb)} (${formatPlusMinusInt(score)}pt)`;
-      if (xVal === x[x.length - 1]) {
-        y[y.length - 1] += score;
-        texts[texts.length - 1] += `<br><br>${text}`;
-      } else {
-        x.push(xVal);
-        y.push(y[y.length - 1] + score);
-        texts.push(text);
-      }
+      const [greaterProb, greaterAnswer] =
+        d.prob < 0.5
+          ? [1 - d.prob, d.question.left]
+          : [d.prob, d.question.right];
+      const text = `Q. ${d.question.text}<br>A. ${rightAnswer} (vs ${wrongAnswer})<br>You: ${greaterAnswer} ${formatProbabilityAsPercentage(greaterProb)} (${formatPlusMinusInt(score)}pt)`;
+
+      x.push(x.length + 1);
+      y.push((y[y.length - 1] ?? 0) + scoreGuess(d.prob, d.question.answer));
+      texts.push(text);
     }
-    x.push(1);
-    y.push(y[y.length - 1]);
-    texts.push("");
-    console.log({ x, y, texts });
 
     const traces: Data[] = [
       {
@@ -51,12 +43,13 @@ export const CalibrationPlot = ({
         y,
         name: "Cumulative Score",
         type: "scatter",
-        mode: "lines",
+        mode: "lines+markers",
         "line.shape": "hv",
         line: { color: "#2563eb", width: 2, shape: "hv" },
         fill: "tozeroy",
         hovertemplate: texts,
-        marker: { color: "#ff0000", size: 100 },
+        hoverlabel: { align: "left" },
+        marker: { color: "#2563eb", size: 10 },
       },
       // {
       //   x: cumulativeData.map((d) => d.prob),
@@ -71,16 +64,12 @@ export const CalibrationPlot = ({
     ];
 
     const layout: Partial<Layout> = {
-      title: {
-        text: title,
-        font: { size: 16, weight: 700 },
-      },
       xaxis: {
         title: {
-          text: "Probability (%)",
+          text: "Round #",
           font: { size: 16, weight: 700 },
         },
-        range: [50, 100],
+        range: [0, x.length + 1],
         showgrid: true,
         zeroline: true,
       },
@@ -106,7 +95,7 @@ export const CalibrationPlot = ({
     };
 
     return { traces, layout };
-  }, [data, title]);
+  }, [data]);
 
   // const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   // useEffect(() => {

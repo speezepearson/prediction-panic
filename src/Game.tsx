@@ -639,13 +639,7 @@ function ScorePlot({
     ourPlayerId === playerId
       ? "Your"
       : `${game.players[playerId]?.name ?? "???"}'s`;
-  return (
-    <CalibrationPlot
-      title={`${whose} Calibration Curve`}
-      data={data}
-      width={width}
-    />
-  );
+  return <CalibrationPlot data={data} width={width} />;
 }
 
 function getPlayerScores(game: Doc<"games">): Record<PlayerId, number> {
