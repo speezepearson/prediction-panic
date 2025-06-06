@@ -327,7 +327,7 @@ export function RunningGame({
   const anonDisplayNames = useMemo(() => getAnonDisplayNames(game), [game]);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl mx-auto">
+    <div className="bg-white p-1 rounded-lg shadow-xl w-full max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-6 pb-4 border-b">
         <h2 className="text-3xl font-bold text-primary">Game {game.quickId}</h2>
         <button

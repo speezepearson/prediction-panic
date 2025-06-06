@@ -26,7 +26,7 @@ export default function App({
           <a href="/">Probable Panic</a>
         </h2>
       </header>
-      <main className="flex-1 flex items-center justify-center p-8">
+      <main className="flex-1 flex items-center justify-center">
         <div className="w-full mx-auto">
           <Content gameQuickIdFromHash={gameQuickIdFromHash} />
         </div>
