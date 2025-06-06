@@ -14,7 +14,9 @@ export const CalibrationPlot = ({
 }) => {
   const plotData = useMemo((): { traces: Data[]; layout: Partial<Layout> } => {
     // Sort data by probability
-    const sortedData = [...data].sort((a, b) => a.prob - b.prob);
+    const sortedData = data
+      .map((d) => (d.prob < 0.5 ? { prob: 1 - d.prob, actual: !d.actual } : d))
+      .sort((a, b) => a.prob - b.prob);
 
     // Create cumulative data points
     const cumulativeData: {
@@ -48,7 +50,7 @@ export const CalibrationPlot = ({
 
     const traces: Data[] = [
       {
-        x: cumulativeData.map((d) => d.prob),
+        x: cumulativeData.map((d) => 100 * d.prob),
         y: cumulativeData.map((d) => d.cumScore),
         name: "Cumulative Score",
         type: "scatter",
@@ -77,16 +79,16 @@ export const CalibrationPlot = ({
       },
       xaxis: {
         title: {
-          text: "Probability",
+          text: "Probability (%)",
           font: { size: 16, weight: 700 },
         },
-        range: [0, 1],
+        range: [50, 100],
         showgrid: true,
         zeroline: true,
       },
       yaxis: {
         title: {
-          text: "Cumulative Count",
+          text: "Cumulative Score",
           font: { size: 16, weight: 700 },
         },
         showgrid: true,

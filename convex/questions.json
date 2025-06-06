@@ -2,30 +2,24 @@
   "____ wrote the Sequences.": {
     "left": "Eliezer Yudkowsky",
     "right": "Scott Alexander",
-    "answer": true,
+    "answer": false,
     "tags": ["rat", "trivia"]
   },
-  "In the Smoking Lesion problem, EDT says to smoke.": {
-    "left": "false",
-    "right": "true",
+  "In the Smoking Lesion problem, EDT says to...": {
+    "left": "not smoke",
+    "right": "smoke",
     "answer": false,
     "tags": ["rat"]
   },
-  "In the Smoking Lesion problem, FDT says to smoke.": {
-    "left": "false",
-    "right": "true",
+  "In the Smoking Lesion problem, FDT says to...": {
+    "left": "not smoke",
+    "right": "smoke",
     "answer": true,
     "tags": ["rat"]
   },
-  "In the Smoking Lesion problem, CDT says to smoke.": {
-    "left": "false",
-    "right": "true",
-    "answer": true,
-    "tags": ["rat"]
-  },
-  "Manifest 2024 had >800 attendees.": {
-    "left": "false",
-    "right": "true",
+  "Manifest 2024 had ____ attendees.": {
+    "left": "< 600",
+    "right": "> 800",
     "answer": false,
     "tags": ["rat", "trivia"]
   },
