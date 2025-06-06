@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "convex/react";
 import _ from "lodash";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import z from "zod/v4";
 import { api } from "../convex/_generated/api";
@@ -395,10 +395,31 @@ function GameOver({
     );
   }, [game.finishedRounds, playerId]);
 
+  const container = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(600);
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setContainerWidth(entry.contentRect.width);
+      }
+    });
+
+    if (container.current) {
+      resizeObserver.observe(container.current);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [container]);
+
   return (
-    <div className="flex flex-col justify-center items-center h-full w-full">
+    <div
+      className="flex flex-col justify-center items-center h-full w-full"
+      ref={container}
+    >
       <h2 className="text-2xl font-bold text-gray-800">Game Over!</h2>
-      <ScorePlot game={game} playerId={playerId} />
+      <ScorePlot game={game} playerId={playerId} width={containerWidth} />
       <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr>
@@ -596,9 +617,11 @@ function ActiveRound({
 function ScorePlot({
   game,
   playerId,
+  width,
 }: {
   game: Doc<"games">;
   playerId: PlayerId;
+  width: number;
 }) {
   const ourPlayerId = usePlayerId();
   const data: CalibrationData[] = useMemo(() => {
@@ -617,9 +640,11 @@ function ScorePlot({
       ? "Your"
       : `${game.players[playerId]?.name ?? "???"}'s`;
   return (
-    <div>
-      <CalibrationPlot title={`${whose} Calibration Curve`} data={data} />
-    </div>
+    <CalibrationPlot
+      title={`${whose} Calibration Curve`}
+      data={data}
+      width={width}
+    />
   );
 }
 

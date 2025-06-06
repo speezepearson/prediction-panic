@@ -1,5 +1,5 @@
 import { Data, Layout } from "plotly.js";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Plot from "react-plotly.js";
 import { scoreGuess } from "../convex/validation";
 import { formatPlusMinusInt, formatProbabilityAsPercentage } from "./lib/utils";
@@ -13,9 +13,11 @@ export type CalibrationData = {
 export const CalibrationPlot = ({
   data,
   title,
+  width,
 }: {
   data: CalibrationData[];
   title: string;
+  width: number;
 }) => {
   const plotData = useMemo((): { traces: Data[]; layout: Partial<Layout> } => {
     const x: number[] = [50];
@@ -98,26 +100,33 @@ export const CalibrationPlot = ({
       //   bgcolor: "rgba(255, 255, 255, 0.8)",
       // },
       hovermode: "closest" as const,
-      width: 600,
-      height: 400,
+      autosize: true,
+      // width: 600,
+      height: 500,
     };
 
     return { traces, layout };
   }, [data, title]);
 
+  // const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  // useEffect(() => {
+  //   const handleResize = () => setScreenWidth(window.innerWidth);
+  //   window.addEventListener("resize", handleResize);
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
+
   return (
-    <div className="p-4">
-      <Plot
-        data={plotData.traces}
-        layout={plotData.layout}
-        config={{
-          responsive: true,
-          displayModeBar: true,
-          displaylogo: false,
-          modeBarButtonsToRemove: ["lasso2d", "select2d"],
-        }}
-        className="border border-gray-300"
-      />
-    </div>
+    <Plot
+      data={plotData.traces}
+      layout={plotData.layout}
+      config={{
+        responsive: true,
+        displayModeBar: true,
+        displaylogo: false,
+        modeBarButtonsToRemove: ["lasso2d", "select2d"],
+      }}
+      style={{ width: `${width}px`, height: "500px" }}
+      className="border border-gray-300 my-4"
+    />
   );
 };
