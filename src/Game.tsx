@@ -20,8 +20,10 @@ import {
   errString,
   formatPlusMinusInt,
   formatProbabilityAsPercentage,
+  formatTimeRemaining,
   getRecordEntries,
   ifEnter,
+  useNow,
 } from "./lib/utils";
 import { usePlayerId } from "./player-info";
 import { List, Map } from "immutable";
@@ -451,6 +453,8 @@ function ActiveRound({
     [playerGuess]
   );
 
+  const now = useNow();
+
   // adjust the guess when the player hits the left/right arrow keys
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -467,8 +471,8 @@ function ActiveRound({
 
   return (
     <div className="flex flex-col items-center p-2">
-      <h3 className="text-xl font-semibold text-blue-700 mb-2">
-        Current Statement:
+      <h3 className="text-xl font-mono font-semibold text-blue-700 mb-2">
+        {formatTimeRemaining(now, currentRound.endsAtMs)}
       </h3>
       <p className="text-lg text-gray-800 text-center">
         {currentRound.question.text}

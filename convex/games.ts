@@ -208,6 +208,7 @@ export const tickGame = internalMutation({
         guesses: Object.fromEntries(
           Object.keys(game.players).map((playerId) => [playerId, 0.5])
         ),
+        endsAtMs: Date.now() + game.secondsPerQuestion * 1000,
       }),
       ctx.db.patch(gameId, { roundsRemaining: game.roundsRemaining - 1 }),
     ]);

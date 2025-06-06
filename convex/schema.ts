@@ -33,6 +33,7 @@ const applicationTables = {
     gameId: v.id("games"),
     question: vRedactedQuestion,
     guesses: vPlayerGuesses,
+    endsAtMs: v.number(),
   }).index("by_gameId", ["gameId"]),
 };
 

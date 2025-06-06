@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { ConvexError } from "convex/values";
 import { List } from "immutable";
+import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -58,3 +59,21 @@ export const ANON_DISPLAY_NAMES = List([
   "Anon",
   "???",
 ]);
+
+export function useNow() {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(Date.now());
+    }, 41);
+    return () => clearInterval(interval);
+  }, []);
+  return now;
+}
+
+export function formatTimeRemaining(now: number, endsAtMs: number): string {
+  if (endsAtMs < now) {
+    return "00.00";
+  }
+  return `${((endsAtMs - now) / 1000).toFixed(2)}`.padStart(5, "0");
+}
