@@ -27,7 +27,7 @@ export const gameQuickIdSchema = z
   .regex(/^[A-Z]*$/);
 
 export type GameQuickId = z.infer<typeof gameQuickIdSchema>;
-export const gameSecondsPerQuestionSchema = z.number().min(1).max(60);
+export const gameSecondsPerQuestionSchema = z.number().min(1).max(15);
 export const gameNumRoundsSchema = z
   .number()
   .int()
