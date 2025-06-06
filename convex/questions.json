@@ -21,7 +21,49 @@
     "left": "< 600",
     "right": "> 800",
     "answer": false,
-    "tags": ["rat", "trivia"]
+    "tags": ["rat", "trivia", "manifest"]
+  },
+  "Manifold Masters League #1 is (at time of writing)...": {
+    "left": "bagelfan",
+    "right": "Eric Neyman",
+    "answer": true,
+    "tags": ["rat", "trivia", "manifest"]
+  },
+  "Aella was at Manifest 2024": {
+    "left": "false",
+    "right": "true",
+    "answer": true,
+    "tags": ["rat", "trivia", "manifest"]
+  },
+  "Manifest 2024 had a round of Strip Figgie": {
+    "left": "false",
+    "right": "true",
+    "answer": true,
+    "tags": ["rat", "trivia", "manifest"]
+  },
+  "Manifest 2024 had a CFTC representative attend.": {
+    "left": "false",
+    "right": "true",
+    "answer": false,
+    "tags": ["rat", "trivia", "manifest"]
+  },
+  "____ is running a 'be hotter' workshop at Manifest 2025.": {
+    "left": "Aella",
+    "right": "Nate Soares",
+    "answer": false,
+    "tags": ["rat", "trivia", "manifest"]
+  },
+  "Robin Hanson is giving ____ talks at Manifest 2025.": {
+    "left": "0-1",
+    "right": "3+",
+    "answer": false,
+    "tags": ["rat", "trivia", "manifest"]
+  },
+  "Manifest 2025 has a ball pit session on the official schedule.": {
+    "left": "false",
+    "right": "true",
+    "answer": false,
+    "tags": ["rat", "trivia", "manifest"]
   },
   "Which does GiveWell list as more effective?": {
     "left": "cash transfers",
