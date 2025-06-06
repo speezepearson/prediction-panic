@@ -255,10 +255,11 @@ export const getCurrentRound = query({
   args: { gameId: v.id("games") },
   handler: async (ctx, args) => {
     if (!args.gameId) return null;
-    return await ctx.db
+    const round = await ctx.db
       .query("currentRounds")
       .withIndex("by_gameId", (q) => q.eq("gameId", args.gameId))
       .unique();
+    return round && { ...round, serverMsFetchedAt: +Date.now() };
   },
 });
 

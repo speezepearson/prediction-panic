@@ -453,9 +453,13 @@ function ActiveRound({
   playerId,
 }: {
   game: StartedGame;
-  currentRound: Doc<"currentRounds">;
+  currentRound: Doc<"currentRounds"> & { serverMsFetchedAt: number };
   playerId: PlayerId;
 }) {
+  const endsAtClientMs = useMemo(
+    () => currentRound.endsAtMs + (Date.now() - currentRound.serverMsFetchedAt),
+    [currentRound.endsAtMs, currentRound.serverMsFetchedAt]
+  );
   const setPlayerGuessMutation = useMutation(api.games.setPlayerGuess);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const debouncedSetGuess = useMemo(
@@ -514,7 +518,7 @@ function ActiveRound({
   return (
     <div className="flex flex-col items-center p-2">
       <h3 className="text-xl font-mono font-semibold text-blue-700 mb-2">
-        {formatTimeRemaining(now, currentRound.endsAtMs)}
+        {formatTimeRemaining(now, endsAtClientMs)}
       </h3>
       <p className="text-lg text-gray-800 text-center">
         {currentRound.question.text}
