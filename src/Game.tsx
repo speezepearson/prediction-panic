@@ -384,11 +384,48 @@ function GameOver({
 }) {
   const [isWorking, setIsWorking] = useState(false);
   const resetGameMutation = useMutation(api.games.resetGame);
+  const roundsByScoreImpactDesc = useMemo(() => {
+    return List(game.finishedRounds).sortBy(
+      (r) => -Math.abs(scoreGuess(r.guesses[playerId] ?? 0.5, r.answer))
+    );
+  }, [game.finishedRounds, playerId]);
 
   return (
     <div className="flex flex-col justify-center items-center h-full w-full">
       <h2 className="text-2xl font-bold text-gray-800">Game Over!</h2>
       <ScorePlot game={game} playerId={playerId} />
+      <table className="w-full border-collapse border border-gray-300">
+        <thead>
+          <tr>
+            <th className="border border-gray-300">Question</th>
+            <th className="border border-gray-300">Right</th>
+            <th className="border border-gray-300">Wrong</th>
+            <th className="border border-gray-300">Your P(Right)</th>
+            <th className="border border-gray-300">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {roundsByScoreImpactDesc.map((r) => (
+            <tr key={r.question.text}>
+              <td className="border border-gray-300">{r.question.text}</td>
+              <td className="border border-gray-300">
+                {r.answer ? r.question.right : r.question.left}
+              </td>
+              <td className="border border-gray-300">
+                {r.answer ? r.question.left : r.question.right}
+              </td>
+              <td className="border border-gray-300">
+                {formatProbabilityAsPercentage(r.guesses[playerId] ?? 0.5)}
+              </td>
+              <td className="border border-gray-300">
+                {formatPlusMinusInt(
+                  Math.round(scoreGuess(r.guesses[playerId] ?? 0.5, r.answer))
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <button
         disabled={isWorking}
         onClick={() => {
@@ -557,9 +594,15 @@ function ScorePlot({
   const ourPlayerId = usePlayerId();
   const data: CalibrationData[] = useMemo(() => {
     return game.finishedRounds
-      .map((r) => ({ prob: r.guesses[playerId], actual: r.answer }))
+      .map((r) => ({
+        prob: r.guesses[playerId],
+        question: { ...r.question, answer: r.answer },
+      }))
       .filter((r) => r.prob !== undefined);
   }, [game, playerId]);
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
   const whose =
     ourPlayerId === playerId
       ? "Your"

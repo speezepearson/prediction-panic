@@ -2,8 +2,13 @@ import { Data, Layout } from "plotly.js";
 import { useMemo } from "react";
 import Plot from "react-plotly.js";
 import { scoreGuess } from "../convex/validation";
+import { formatPlusMinusInt, formatProbabilityAsPercentage } from "./lib/utils";
+import { List } from "immutable";
 
-export type CalibrationData = { prob: number; actual: boolean };
+export type CalibrationData = {
+  prob: number;
+  question: { text: string; left: string; right: string; answer: boolean };
+};
 
 export const CalibrationPlot = ({
   data,
@@ -13,52 +18,42 @@ export const CalibrationPlot = ({
   title: string;
 }) => {
   const plotData = useMemo((): { traces: Data[]; layout: Partial<Layout> } => {
-    // Sort data by probability
-    const sortedData = data
-      .map((d) => (d.prob < 0.5 ? { prob: 1 - d.prob, actual: !d.actual } : d))
-      .sort((a, b) => a.prob - b.prob);
-
-    // Create cumulative data points
-    const cumulativeData: {
-      prob: number;
-      cumScore: number;
-      cumProb: number;
-      cumActual: number;
-    }[] = [{ prob: 0, cumScore: 0, cumProb: 0, cumActual: 0 }];
-    let cumProb = 0;
-    let cumScore = 0;
-    let cumActual = 0;
-
-    sortedData.forEach((d) => {
-      cumProb += d.prob;
-      if (d.actual) cumActual += 1;
-      cumScore += scoreGuess(d.prob, d.actual);
-
-      cumulativeData.push({
-        prob: d.prob,
-        cumScore: cumScore,
-        cumProb: cumProb,
-        cumActual: cumActual,
-      });
-    });
-    cumulativeData.push({
-      prob: 1,
-      cumScore: cumulativeData[cumulativeData.length - 1].cumScore,
-      cumProb: 1,
-      cumActual: cumulativeData[cumulativeData.length - 1].cumActual,
-    });
+    const x: number[] = [50];
+    const y: number[] = [0];
+    const texts: string[] = [""];
+    for (const d of List(data).sortBy((d) => Math.abs(d.prob - 0.5))) {
+      const xVal = 100 * (d.prob < 0.5 ? 1 - d.prob : d.prob);
+      const [rightAnswer, wrongAnswer] = d.question.answer
+        ? [d.question.right, d.question.left]
+        : [d.question.left, d.question.right];
+      const score = scoreGuess(d.prob, d.question.answer);
+      const text = `Q. ${d.question.text}<br>A. ${rightAnswer} (vs ${wrongAnswer})<br>You gave ${rightAnswer}: ${formatProbabilityAsPercentage(d.prob)} (${formatPlusMinusInt(score)}pt)`;
+      if (xVal === x[x.length - 1]) {
+        y[y.length - 1] += score;
+        texts[texts.length - 1] += `<br><br>${text}`;
+      } else {
+        x.push(xVal);
+        y.push(y[y.length - 1] + score);
+        texts.push(text);
+      }
+    }
+    x.push(1);
+    y.push(y[y.length - 1]);
+    texts.push("");
+    console.log({ x, y, texts });
 
     const traces: Data[] = [
       {
-        x: cumulativeData.map((d) => 100 * d.prob),
-        y: cumulativeData.map((d) => d.cumScore),
+        x,
+        y,
         name: "Cumulative Score",
         type: "scatter",
         mode: "lines",
         "line.shape": "hv",
         line: { color: "#2563eb", width: 2, shape: "hv" },
         fill: "tozeroy",
-        hovertemplate: "Probability: %{x:.2f}",
+        hovertemplate: texts,
+        marker: { color: "#ff0000", size: 100 },
       },
       // {
       //   x: cumulativeData.map((d) => d.prob),
