@@ -19,6 +19,7 @@ import {
   cn,
   errString,
   formatPlusMinusInt,
+  formatProbabilityAsOdds,
   formatProbabilityAsPercentage,
   formatTimeRemaining,
   getRecordEntries,
@@ -571,7 +572,7 @@ function ActiveRound({
           </button>
           <div className="flex-grow flex flex-col items-center justify-center">
             <div className="text-center relative">
-              {formatProbabilityAsPercentage(playerGuess)}
+              {formatProbabilityAsOdds(playerGuess)}
               {isSubmitting && (
                 <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>

@@ -77,3 +77,31 @@ export function formatTimeRemaining(now: number, endsAtMs: number): string {
   }
   return `${((endsAtMs - now) / 1000).toFixed(2)}`.padStart(5, "0");
 }
+
+export function formatProbabilityAsOdds(prob: number): string {
+  if (prob >= 0.999) {
+    return ">999 : 1";
+  }
+  if (prob <= 0.001) {
+    return "1 : >999";
+  }
+
+  const isApproxInt = (n: number) => Math.abs(n - Math.round(n)) < 0.01;
+  if (prob >= 0.5) {
+    const odds = prob / (1 - prob);
+    if (odds >= 10) {
+      return `${odds.toFixed(0)} : 1`;
+    }
+    return isApproxInt(odds)
+      ? `${odds.toFixed(0)} : 1`
+      : `${odds.toFixed(1)} : 1`;
+  } else {
+    const odds = (1 - prob) / prob;
+    if (odds >= 10) {
+      return `1 : ${odds.toFixed(0)}`;
+    }
+    return isApproxInt(odds)
+      ? `1 : ${odds.toFixed(0)}`
+      : `1 : ${odds.toFixed(1)}`;
+  }
+}
