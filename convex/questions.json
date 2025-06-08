@@ -5,13 +5,13 @@
     "answer": false,
     "tags": ["rat", "trivia"]
   },
-  "In the Smoking Lesion problem, EDT says to...": {
+  "In the Smoking Lesion problem, EDT says to:": {
     "left": "not smoke",
     "right": "smoke",
     "answer": false,
     "tags": ["rat"]
   },
-  "In the Smoking Lesion problem, FDT says to...": {
+  "In the Smoking Lesion problem, FDT says to:": {
     "left": "not smoke",
     "right": "smoke",
     "answer": true,
@@ -23,7 +23,7 @@
     "answer": false,
     "tags": ["rat", "trivia", "manifest"]
   },
-  "Manifold Masters League #1 is (at time of writing)...": {
+  "Manifold Masters League #1 is (at time of writing):": {
     "left": "bagelfan",
     "right": "Eric Neyman",
     "answer": true,
@@ -95,7 +95,7 @@
     "answer": false,
     "tags": ["rat", "trivia"]
   },
-  "Doing a Bayesian update involves dividing by the probability of the...": {
+  "Doing a Bayesian update involves dividing by the probability of the:": {
     "left": "hypothesis",
     "right": "data",
     "answer": true,
