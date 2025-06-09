@@ -28,7 +28,9 @@ export function CreateGameButton({
       });
       onCreate({ id: gameId, quickId });
     } catch (error) {
-      toast.error(errString(error));
+      toast.error(
+        <pre className="text-xs whitespace-pre-wrap">{errString(error)}</pre>
+      );
     }
   };
 

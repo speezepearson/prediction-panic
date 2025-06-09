@@ -1,19 +1,30 @@
 "use strict";
 
 import _ from "lodash";
-import { mutation, query, internalMutation } from "./_generated/server";
-import { ConvexError, v, Validator } from "convex/values";
+import {
+  mutation as baseMutation,
+  query as baseQuery,
+  internalMutation,
+} from "./_generated/server";
+import { ConvexError, v } from "convex/values";
 import { Doc } from "./_generated/dataModel";
 import { internal } from "./_generated/api";
 import {
   fullQuestions,
   gameNumRoundsSchema,
+  gamePlayerGuessSchema,
   GameQuickId,
   gameQuickIdSchema,
   gameSecondsPerQuestionSchema,
-  PlayerId,
+  playerIdSchema,
+  zodErrorToString,
 } from "./validation";
-import z from "zod/v4";
+import { zCustomQuery, zCustomMutation, zid } from "convex-helpers/server/zod";
+import { NoOp } from "convex-helpers/server/customFunctions";
+import { z } from "zod";
+
+const mutation = zCustomMutation(baseMutation, NoOp);
+const query = zCustomQuery(baseQuery, NoOp);
 
 const DEFAULT_N_ROUNDS = 100;
 const DEFAULT_SECONDS_PER_QUESTION = 6;
@@ -21,7 +32,7 @@ const INTER_ROUND_DELAY = 300;
 
 export const createGame = mutation({
   args: {
-    playerId: v.string() as Validator<PlayerId>,
+    playerId: playerIdSchema,
   },
   handler: async (ctx, { playerId }) => {
     let quickId: GameQuickId;
@@ -53,8 +64,8 @@ export const createGame = mutation({
 
 export const joinGame = mutation({
   args: {
-    quickId: v.string(),
-    playerId: v.string() as Validator<PlayerId>,
+    quickId: gameQuickIdSchema,
+    playerId: playerIdSchema,
   },
   handler: async (ctx, args) => {
     const quickId = gameQuickIdSchema.parse(args.quickId.toUpperCase());
@@ -76,7 +87,7 @@ export const joinGame = mutation({
 });
 
 export const leaveGame = mutation({
-  args: { gameId: v.id("games"), playerId: v.string() as Validator<PlayerId> },
+  args: { gameId: zid("games"), playerId: playerIdSchema },
   handler: async (ctx, args) => {
     const game = await ctx.db.get(args.gameId);
     if (!game) throw new ConvexError("Game not found.");
@@ -90,13 +101,13 @@ export const leaveGame = mutation({
 
 export const updateGameSettings = mutation({
   args: {
-    gameId: v.id("games"),
-    roundsRemaining: v.optional(v.number()),
-    secondsPerQuestion: v.optional(v.number()),
-    playerName: v.optional(
-      v.object({
-        playerId: v.string() as Validator<PlayerId>,
-        name: v.string(),
+    gameId: zid("games"),
+    roundsRemaining: z.optional(gameNumRoundsSchema),
+    secondsPerQuestion: z.optional(gameSecondsPerQuestionSchema),
+    playerName: z.optional(
+      z.object({
+        playerId: playerIdSchema,
+        name: z.string(),
       })
     ),
   },
@@ -113,7 +124,7 @@ export const updateGameSettings = mutation({
       );
       if (roundsRemaining.error)
         throw new ConvexError({
-          message: z.prettifyError(roundsRemaining.error),
+          message: zodErrorToString(roundsRemaining.error),
           code: 400,
         });
       updates.roundsRemaining = roundsRemaining.data;
@@ -124,7 +135,7 @@ export const updateGameSettings = mutation({
       );
       if (secondsPerQuestion.error)
         throw new ConvexError({
-          message: z.prettifyError(secondsPerQuestion.error),
+          message: zodErrorToString(secondsPerQuestion.error),
           code: 400,
         });
       updates.secondsPerQuestion = secondsPerQuestion.data;
@@ -222,7 +233,7 @@ export const tickGame = internalMutation({
 });
 
 export const startGame = mutation({
-  args: { gameId: v.id("games") },
+  args: { gameId: zid("games") },
   handler: async (ctx, args) => {
     const game = await ctx.db.get(args.gameId);
     if (!game) throw new ConvexError("Game not found.");
@@ -245,14 +256,14 @@ export const startGame = mutation({
 });
 
 export const getGame = query({
-  args: { gameId: v.id("games") },
+  args: { gameId: zid("games") },
   handler: async (ctx, args): Promise<null | Doc<"games">> => {
     return await ctx.db.get(args.gameId);
   },
 });
 
 export const getCurrentRound = query({
-  args: { gameId: v.id("games") },
+  args: { gameId: zid("games") },
   handler: async (ctx, args) => {
     if (!args.gameId) return null;
     const round = await ctx.db
@@ -265,10 +276,10 @@ export const getCurrentRound = query({
 
 export const setPlayerGuess = mutation({
   args: {
-    gameId: v.id("games"),
-    playerId: v.string() as Validator<PlayerId>,
-    questionText: v.string(),
-    guess: v.number(),
+    gameId: zid("games"),
+    playerId: playerIdSchema,
+    questionText: z.string(),
+    guess: gamePlayerGuessSchema,
   },
   handler: async (ctx, args) => {
     const currentRound = await ctx.db
@@ -311,7 +322,7 @@ export const setPlayerGuess = mutation({
 });
 
 export const resetGame = mutation({
-  args: { gameId: v.id("games") },
+  args: { gameId: zid("games") },
   handler: async (ctx, args) => {
     await ctx.db.patch(args.gameId, {
       started: false,

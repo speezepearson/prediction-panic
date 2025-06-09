@@ -36,7 +36,7 @@ export function formatPlusMinusInt(n: number): string {
 
 export function errString(error: unknown): string {
   if (error instanceof ConvexError) {
-    return String(error.data);
+    return String(error.data.message ?? error.data);
   }
   return error instanceof Error ? error.message : String(error);
 }

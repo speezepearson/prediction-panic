@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "convex/react";
 import _ from "lodash";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import z from "zod/v4";
+import { z } from "zod";
 import { api } from "../convex/_generated/api";
 import { Doc } from "../convex/_generated/dataModel";
 import {
@@ -12,6 +12,7 @@ import {
   PlayerId,
   scoreGuess,
   StartedGame,
+  zodErrorToString,
 } from "../convex/validation";
 import { CalibrationData, CalibrationPlot } from "./CalibrationPlot";
 import {
@@ -214,7 +215,7 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
           />
           {rounds.error && (
             <div className="text-red-500 text-sm col-span-3 ml-auto">
-              {z.prettifyError(rounds.error)}
+              {zodErrorToString(rounds.error)}
             </div>
           )}
         </div>
@@ -238,7 +239,7 @@ export function GameLobby({ game, playerId, onLeave }: GameLobbyProps) {
           />
           {secondsPerQuestion.error && (
             <div className="text-red-500 text-sm col-span-3 ml-auto">
-              {z.prettifyError(secondsPerQuestion.error)}
+              {zodErrorToString(secondsPerQuestion.error)}
             </div>
           )}
         </div>
@@ -624,7 +625,6 @@ function ScorePlot({
   playerId: PlayerId;
   width: number;
 }) {
-  const ourPlayerId = usePlayerId();
   const data: CalibrationData[] = useMemo(() => {
     return game.finishedRounds
       .map((r) => ({
@@ -636,10 +636,6 @@ function ScorePlot({
   useEffect(() => {
     console.log(data);
   }, [data]);
-  const whose =
-    ourPlayerId === playerId
-      ? "Your"
-      : `${game.players[playerId]?.name ?? "???"}'s`;
   return <CalibrationPlot data={data} width={width} />;
 }
 

@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 import { Doc } from "./_generated/dataModel";
 import allQuestions from "./questions.json" with { type: "json" };
 import { Map } from "immutable";
@@ -33,7 +33,7 @@ export const gameNumRoundsSchema = z
   .int()
   .min(1)
   .max(redactedQuestions.size, {
-    error: `There are only ${redactedQuestions.size} questions`,
+    message: `There are only ${redactedQuestions.size} questions`,
   });
 export const gamePlayerGuessSchema = z.number().min(0).max(1);
 
@@ -45,4 +45,8 @@ export type LobbyGame = Doc<"games"> & { started: false };
 
 export function scoreGuess(guess: number, answer: boolean) {
   return 100 * (1 + Math.log2(answer ? guess : 1 - guess));
+}
+
+export function zodErrorToString(error: z.ZodError): string {
+  return error.format()._errors.join("\n");
 }
